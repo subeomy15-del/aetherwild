@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {freshState,transact,applyFact,discover,makeBlueprint,blueprintCost,reconstruct,encodeSave,decodeSave,validateState,SaveStore,questSummary} from '../dist/src/core.js';
-import {questStage} from '../dist/src/data.js';
+import {questStage,SAVE_VERSION} from '../dist/src/data.js';
 
 class MemoryStorage {
  constructor(){this.values=new Map();this.failOn=null;}
@@ -52,7 +52,7 @@ test('versioned saves preserve inventory, objects, quest facts, discovery and bl
 
 test('v1 saves migrate missing notes and blueprints; future and malformed saves fail validation',()=>{
  const legacy=freshState();legacy.version=1;delete legacy.pins;delete legacy.blueprints;
- const migrated=validateState(legacy);assert.equal(migrated.version,2);assert.deepEqual(migrated.pins,[]);assert.deepEqual(migrated.blueprints,[]);
+ const migrated=validateState(legacy);assert.equal(migrated.version,SAVE_VERSION);assert.deepEqual(migrated.pins,[]);assert.deepEqual(migrated.blueprints,[]);
  const future=freshState();future.version=99;assert.throws(()=>validateState(future),/version/);
  const bad=freshState();bad.inventory.copper=-1;assert.throws(()=>validateState(bad),/inventory/);
  const dup=freshState();dup.objects.push({...dup.objects[0]});assert.throws(()=>validateState(dup),/construction/);

@@ -1,42 +1,38 @@
-# Content registry
+# Content registry — 0.3
 
-Version 0.1 early preview. “Implemented” below means present in code, not an end-to-end playtest pass. Runtime verification limits are in BUILD_STATUS.md.
-
-## Implemented locations and actors
-| Stable ID | Content |
+## Implemented surface content
+| ID | Content and purpose |
 |---|---|
-| `reedwake` | Camp, Sella (`sella`), fire, field guide, beacon and safe respawn |
-| `crossing` | Broken aqueduct, two panel sockets, recall winch and western stepping stones |
-| `reedwatch` | Ruins, salvage cache, warning note and two scavengers |
-| `bellwether` | Intake terrace, counterweight cradle, recall winch, regulator, sentinel and beacon |
-| `hollow` | Luminous root grove and optional historical note |
-| `bluff` | Surveyor's lookout, mineral climbing faces, notebook and cache |
-| `mossglass` | Glasswater Shore and useful mineral pickup |
+| reedwake / sella | Camp, field researcher, rest/food, save beacon, guide and quest reward |
+| crossing | Two-part aqueduct, recall winch, swimming and western stone alternatives |
+| reedwatch | Ruins, two mossback scavengers, warning and salvage |
+| bellwether | Intake, sentinel, counterweight cradle, iris, regulator choice and beacon |
+| bellwether-canopy / canopy-cache | Rise ceiling/roof; mossglass/materials/skiff pattern |
+| hollow / root-updraft | Eda's note and luminous roots; root-route sailcloth launch |
+| bluff | Optional survey notebook and useful mossglass cache |
+| mossglass | Shore/mineral discovery and raft-travel context |
+| eda-echo | Optional inspectable story fragment; not a motion-reversal power |
+| restored-road | Channel-choice physical crossing |
 
-Enemy IDs: `scrapper-1`, `scrapper-2` (cautious scavenger), `sentinel-1` (shield sentinel). Three actors and two archetypes; no bosses. Eight pickup/cache definitions. Distant Crown islands and waterfalls are scenic representations, not playable sky or underground content.
+Seven formal discovery IDs; the canopy is part of Bellwether, not another region. Distant Crown mesas are scenery. No playable Rootsea biome, sky region, major dungeon or boss.
 
-## Implemented items, construction and story
-Items: `copper`, `fiber`, `broth`, `glass`, `regulator`. Equipment: dependable mechanic's blade, Wayfarer Loom and sailcloth. Quest reward: reinforced sailcloth behavior and maximum stamina raised from 100 to 130.
+## Actors, parts and rewards
+Iri Vale, Sella Venn and memory/signal of Eda Rook. Scavenger and sentinel roles: three actors total. Two initial panels, weight and raft; owned reconstructed parts capped at 24. Copper, woven fiber, broth, mossglass and regulator. Intake-skiff blueprint; reinforced sailcloth and +30 stamina reward.
 
-Components: `panel`, `counterweight`, `raft`. Initial objects: `panel-a`, `panel-b`, `weight-a`, `raft-a`. Sockets: `crossing-south`, `crossing-north`, `intake-weight`. Blueprint data stores component kind, relative position and rotation; reconstruction creates owned parts and spends materials. Owned parts can be dismantled for materials. This is a limited curated construction system.
+## Persistent quest q_breathing_basin
+Facts: metSella, intakeOpen, route (roots/channels), rewarded. Derived steps accept discovery, puzzle completion and route choice before formal acceptance. Regulator completion is gated by intakeOpen. Return reward is idempotent; the selected route powers its visible consequence. Ninth Relay is a future lead, explicitly inaccessible in this chapter.
 
-One local quest, **The Basin That Breathes**, uses persistent `metSella`, `intakeOpen`, `route` and `rewarded` facts plus discoveries. Stages derive from facts and support reaching the intake before meeting Sella. `route` is `roots` or `channels`; it controls the hollow light and dialogue outcome. The reward and ending require the route choice and return dialogue.
+## Puzzle: aqueduct crossing
+Observe two marked loose panels, matching teal brackets and a flooded gap. Teaches lifting, quarter-turn alignment, snapping and stable surfaces. Intended: fit both panels and walk across. Alternatives: swim, western stones/ridge. Reset: nearby winch recalls the two original IDs; detach/undo recover experiments. No essential panel consumption. Reward: reusable route and construction knowledge. Shape/text feedback supplement color; controls remap and no timer applies. Whole constructed crossing playtested.
 
-## Puzzle records
-### Unfinished Crossing
-- Observe: two loose teal-marked panels, two matching brackets and a flooded gap.
-- Rule: Threadbind moves compatible components; aligned rigid sockets provide stable placement.
-- Intended solution: lift, rotate as needed, and attach each panel to a bracket to create a crossing.
-- Authored alternatives: western stepping stones, swimming with stamina, or an indirect approach. These routes still require runtime traversal checks.
-- Reset/recovery: local winch recalls both essential panels; detach and undo are available.
-- Reward: a persistent physical route and access to the northern basin, without a mandatory quest gate.
-- Accessibility: text validity prompts, outline/preview, rotation controls and alternate traversal; clarity is not yet playtested.
+## Puzzle: Bellwether intake
+Observe an empty marked cradle, heavy ceramic weight, recall winch and closed iris. Tests compatible part/mass. Intended: carry the weight to the cradle. A reconstructed compatible weight can also satisfy the socket; alternative approach routes are accepted. Regulator requires the latched open fact, so bypassing scenic geometry does not skip the puzzle. Recall/reset and permanent open latch prevent lost-weight softlocks. Reward: Eda's signal, route choice and return reward. No timing or audio-only clue. Puzzle and unexpected quest order playtested.
 
-### Bellwether Counterweight
-- Observe: empty teal cradle, nearby marked ceramic weight, closed iris and an inspection prompt.
-- Rule: a matching heavy component attached to the cradle opens the iris.
-- Intended solution: Threadbind the ceramic weight into `intake-weight`, then inspect the regulator.
-- Alternate approach: carry the compatible weight from any accessible side; reconstruction can supply another compatible counterweight. This is an authored socket rule, not a general mass solver.
-- Reset/recovery: the nearby winch recalls `weight-a`; the open fact stays set after activation. Regulator interaction checks that fact.
-- Reward: recovered regulator, route choice, visible local world state and the return-to-Sella objective.
-- Accessibility: inspect/reset prompts and explicit compatibility feedback. The complete puzzle/reward journey remains unverified.
+## Optional: Rise canopy
+Observe concentric ceramic ceiling marks and an inscription. Test stable/thin/reachable overhead geometry and a safe exit. Preview explains rejection; ascent can be canceled to entry. Access the roof cache and descend by sailcloth or beacon. Reward: actual skiff blueprint, three mossglass and construction materials. Reward persists and cannot be repeatedly collected. Rise, cache and invalid targeting playtested.
+
+## Choice consequences
+Roots: luminous hollow remains alive and an interactable updraft launches sailcloth; bounded wind affects gliding. Visited/activated in browser. Channels: a physical road crossing reopens; collision is regression-tested. The entire channel ending route still needs a separate browser pass.
+
+## Not implemented
+The proposed large campaign, time-era memory chain, regional allies/dungeons/bosses, broad materials/devices, Bind/Echo/Survey and playable sky/underground layers remain planned. Do not count writing, buttons or silhouettes as completed content.

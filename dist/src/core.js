@@ -6,7 +6,7 @@ function nextId(prefix,occupied=[]){
  do{id=prefix+'-'+Date.now().toString(36)+'-'+(idSequence++).toString(36);}while([...ids].some(existing=>existing===id||existing.startsWith(id+'-')));
  return id;
 }
-export function freshState(){return {version:SAVE_VERSION,player:{...START,hp:6,maxHp:6,stamina:100,maxStamina:100},safe:{...START},inventory:{copper:3,fiber:4,broth:3,glass:0,regulator:0},facts:{metSella:false,intakeOpen:false,route:null,rewarded:false},discovered:['reedwake'],collected:[],defeated:[],objects:clone(INITIAL_OBJECTS),blueprints:[],pins:[],playtime:0,saveTime:null};}
+export function freshState(){return {version:SAVE_VERSION,expedition:{name:'First Expedition'},abilities:['weave','rise'],player:{...START,hp:6,maxHp:6,stamina:100,maxStamina:100},safe:{...START},inventory:{copper:3,fiber:4,broth:3,glass:0,regulator:0},facts:{metSella:false,intakeOpen:false,route:null,rewarded:false},discovered:['reedwake'],collected:[],defeated:[],objects:clone(INITIAL_OBJECTS),blueprints:[],pins:[],playtime:0,saveTime:null};}
 export function transact(inventory,delta){
  if(!inventory||!delta||Object.entries(delta).some(([k,n])=>!Object.hasOwn(inventory,k)||!Number.isSafeInteger(n)||inventory[k]+n<0||inventory[k]+n>999))return false;
  for(const [k,n] of Object.entries(delta))inventory[k]+=n;return true;
@@ -47,9 +47,12 @@ export function reconstruct(state,bp,origin){
 }
 export function checksum(text){let h=2166136261;for(let i=0;i<text.length;i++){h^=text.charCodeAt(i);h=Math.imul(h,16777619);}return (h>>>0).toString(16);}
 export function validateState(raw){
- if(!raw||typeof raw!=='object'||Array.isArray(raw)||![1,2].includes(raw.version))throw Error('Unrecognized save version.');
+ if(!raw||typeof raw!=='object'||Array.isArray(raw)||![1,2,3].includes(raw.version))throw Error('Unrecognized save version.');
  const s=clone(raw);
  if(s.version===1){s.pins??=[];s.blueprints??=[];s.version=2;}
+ if(s.version===2){s.expedition??={name:'First Expedition'};s.abilities=['weave','rise'];s.version=3;}
+ if(typeof s.expedition?.name!=='string'||!s.expedition.name.trim()||s.expedition.name.length>32)throw Error('Invalid expedition name.');
+ if(!Array.isArray(s.abilities)||s.abilities.length>2||!s.abilities.every(a=>['weave','rise'].includes(a)))throw Error('Invalid ability data.');
  for(const key of ['x','y','z','hp','maxHp','stamina','maxStamina'])if(!Number.isFinite(s.player?.[key]))throw Error('Invalid player state.');
  if(Math.abs(s.player.x)>210||Math.abs(s.player.z)>210||s.player.y < -20||s.player.y>300)throw Error('Invalid player position.');
  if(!s.safe||!['x','y','z'].every(k=>Number.isFinite(s.safe[k])&&Math.abs(s.safe[k])<210))throw Error('Invalid safe position.');
@@ -68,7 +71,7 @@ export function validateState(raw){
 export function encodeSave(state){const payload=JSON.stringify(validateState(state));return JSON.stringify({format:'aetherwild',version:SAVE_VERSION,checksum:checksum(payload),payload});}
 export function decodeSave(text){const e=JSON.parse(text);if(e.format!=='aetherwild'||typeof e.payload!=='string'||e.payload.length>300000||checksum(e.payload)!==e.checksum)throw Error('Save checksum did not match.');return validateState(JSON.parse(e.payload));}
 export class SaveStore{
- constructor(storage){this.storage=storage;this.key='aetherwild.save.v2';this.error=null;}
+ constructor(storage,key='aetherwild.save.v2'){this.storage=storage;this.key=key;this.error=null;}
  write(state){
    const candidate=clone(state);candidate.saveTime=new Date().toISOString();
    const data=encodeSave(candidate);const s=this.storage;
@@ -80,5 +83,14 @@ export class SaveStore{
  load(){this.error=null;for(const suffix of ['', '.backup']){try{const raw=this.storage.getItem(this.key+suffix);if(raw){const state=decodeSave(raw);if(suffix)this.error='Primary save was damaged. Recovered the previous backup.';return state;}}catch(error){this.error=error.message;}}return null;}
  exists(){return !!this.load();}
 }
-export function loadSettings(storage){try{const s=JSON.parse(storage.getItem('aetherwild.settings'));return {...clone(DEFAULT_SETTINGS),...s,bindings:{...DEFAULT_SETTINGS.bindings,...s?.bindings}};}catch{return clone(DEFAULT_SETTINGS);}}
+export function sanitizeSettings(raw){
+ const s=clone(DEFAULT_SETTINGS);if(!raw||typeof raw!=='object'||Array.isArray(raw))return s;
+ const ranges={master:[0,1],music:[0,1],sfx:[0,1],ambient:[0,1],sensitivity:[.2,2.5],gamepadSensitivity:[.2,2.5],textScale:[.85,1.35],resolution:[.65,1.5],vegetation:[.3,1],shadowDistance:[24,70]};
+ for(const[k,[a,b]]of Object.entries(ranges))if(Number.isFinite(raw[k]))s[k]=clamp(raw[k],a,b);
+ for(const[k,v]of Object.entries(s))if(typeof v==='boolean'&&typeof raw[k]==='boolean')s[k]=raw[k];
+ if(['high','low'].includes(raw.quality))s.quality=raw.quality;
+ for(const k of Object.keys(s.bindings)){const v=raw.bindings?.[k];if(typeof v==='string'&&/^(Key[A-Z]|Digit[0-9]|Space|Tab|Escape|ShiftLeft|ShiftRight|ControlLeft|ControlRight|AltLeft|AltRight|Arrow(Up|Down|Left|Right)|Mouse[012]|Backquote|Enter|Backspace|[A-Za-z]{2,20})$/.test(v))s.bindings[k]=v;}
+ return s;
+}
+export function loadSettings(storage){try{return sanitizeSettings(JSON.parse(storage.getItem('aetherwild.settings')));}catch{return clone(DEFAULT_SETTINGS);}}
 export function questSummary(state){return {stage:questStage(state),completed:state.facts.rewarded,choice:state.facts.route};}

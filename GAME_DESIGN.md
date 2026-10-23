@@ -1,19 +1,21 @@
 # Aetherwild: The Broken Horizon
 
-An original single-player third-person action adventure. Ancient weather engines fractured; the resulting ecosystems are alive. Repairing everything to its original specification may erase them. Freedom means several readable approaches and useful discoveries, not empty acreage.
+An original single-player action adventure about repair versus restoration. Ancient weather engines fractured nineteen years ago. New ecosystems grew in the broken network; restoring its original directives could erase them. “The engines fell silent. The wild found its voice.” “Some things are worth fixing differently.”
 
-## First adventure: The Basin That Breathes
-The player is Iri, an expedition mechanic with a damaged Wayfarer Loom. They arrive at Reedwake Camp in Mossglass Basin. Field researcher Sella wants a weather bell working again but asks Iri to keep the new luminous roots alive. The route leads across a flooded aqueduct, through scavenger territory and into the Bellwether Intake. Threadbind lets Iri move and connect curated mechanical objects. A routed counterweight opens the intake. The recovered regulator can restore the original water route or feed the new roots. Return to camp for a reinforced sailcloth, an expedition ending and continued exploration.
+## Current playable chapter
+Iri Vale, an expedition mechanic, searches for missing partner Eda Rook after a renewed engine pulse. Reedwake researcher Sella sends Iri to Bellwether's transit memory. The route offers a repaired aqueduct, swimming and western stones; scavengers contest the ruins. Threadbind positions a counterweight, opening the intake. A recovered signal proves Eda survived and names the Ninth Relay. The regulator must feed either living roots or the old surface channels. Returning the signal grants a reinforced sailcloth and 30 stamina.
 
-The playable implementation and exact controls are listed in BUILD_STATUS.md; remaining systems here are design intentions.
+Rise offers an optional route through the intake canopy to a useful skiff blueprint/cache. The root choice creates an updraft; the channel choice creates a road shortcut. Construction and direct fighting are options, not universal requirements. The exact implemented/verified scope is in BUILD_STATUS.md.
 
 ## Pillars
-Responsive travel; landmarks with distinct rewards; understandable mechanical rules; recoverable experiments; quiet environmental stories; meaningful choices with visible local consequences. Stylized ceramic, woven cloth, copper, mineral glass and living light form a single visual language.
+Responsive travel; distinct landmarks; understandable mechanical rules; recoverable experiments; short emotional dialogue; useful rewards; visible local consequences. Depth and composition take priority over empty terrain acreage. Ceramic ribs, woven cloth, oxidized copper, mineral conduits and living light form one art language.
 
-## Long-term systems (planned unless recorded as implemented)
-Threadbind connects rigid brackets, hinges, ropes, axles and powered couplers. Impulse Vessel stores then redirects energy. Bloomwake awakens readable species with consistent functions. Echo Lens shows discontinuous historical clues. Curated joints and kinematic machinery take precedence over unstable general-purpose physics.
+## Expansion direction — planned
+Preserve Iri and Eda as the Wayfarer/missing-companion roles from the master brief. Expand Eda's agency through independently readable memories and a journal chronology. Add a playable buried-engine prologue, compact sky return, connected Rootsea cave and regional investigations. Oren's brace intelligence, Veyr's enforced equilibrium, a false return, caretaker exploration and a locally controlled network finale are future narrative work, not current quest content.
 
-Combat will expand from a dependable mechanic's blade to a polearm, heavy tool and bow. Telegraphs, pursuit limits and terrain matter. Progression opens new options: stamina, tool capacity, components, protection, services and routes. A small resource set supports experimentation. Repairable signature gear avoids replacement churn.
+Threadbind is the current Weave expression. Rise is implemented on authored stable canopies. Bind, localized motion-reversal Echo, broader Pattern construction and Survey remain planned. The original Impulse Vessel/Bloomwake/Echo Lens concepts will be reconciled with these before implementation; the game does not expose placeholder powers.
 
-## Eventual adventure
-Explore the Surface Marches, Drifting Crown and Rootsea in flexible regional order. Recover conflicting evidence from six weather engines. Settle local conflicts before making the final decision about the network. Original layouts and characters; no borrowed maps, music or franchise assets.
+Progression should open capability: components, stamina, protection, equipment, settlement services and routes. Expand from the dependable blade and small resource economy only after current combat and construction are reliable.
+
+## Content targets
+Eight surface regions, four sky archipelagos, five underground biomes, six major dungeons, distinct bosses and regional allies are adjustable production targets. No terrain silhouette counts as playable content. The next milestone is a 20–40 minute connected example of surface, sky and cave rather than broad geographical expansion.

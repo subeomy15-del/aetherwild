@@ -1,14 +1,15 @@
 export class AudioSystem{
- constructor(settings){this.settings=settings;this.context=null;this.time=0;this.step=0;this.lastFoot=0;this.caption=()=>{};}
+ constructor(settings){this.settings=settings;this.context=null;this.time=0;this.step=0;this.lastFoot=0;this.caption=()=>{};this.focused=true;}
  start(){
   if(this.context){this.context.resume();return;}
   const AudioContext=window.AudioContext||window.webkitAudioContext;if(!AudioContext)return;
-  this.context=new AudioContext();const c=this.context;this.master=c.createGain();this.master.gain.value=.52;this.master.connect(c.destination);this.buses={};
+  this.context=new AudioContext();const c=this.context;this.master=c.createGain();this.master.gain.value=.52*this.settings.master;this.master.connect(c.destination);this.buses={};
   for(const k of ['music','sfx','ambient']){const g=c.createGain();g.gain.value=this.settings[k];g.connect(this.master);this.buses[k]=g;}
   const buffer=c.createBuffer(1,c.sampleRate*3,c.sampleRate),d=buffer.getChannelData(0);let v=0;for(let i=0;i<d.length;i++){v=(v+(Math.random()*2-1)*.025)*.995;d[i]=v;}
   const noise=c.createBufferSource();noise.buffer=buffer;noise.loop=true;const filter=c.createBiquadFilter();filter.type='lowpass';filter.frequency.value=440;const gain=c.createGain();gain.gain.value=.2;noise.connect(filter).connect(gain).connect(this.buses.ambient);noise.start();
  }
- apply(){if(this.context)for(const[k,g]of Object.entries(this.buses))g.gain.setTargetAtTime(Number(this.settings[k])||0,this.context.currentTime,.08);}
+ apply(){if(this.context){for(const[k,g]of Object.entries(this.buses))g.gain.setTargetAtTime(Number(this.settings[k])||0,this.context.currentTime,.08);this.master.gain.setTargetAtTime(this.settings.muteUnfocused&&!this.focused?0:.52*this.settings.master,this.context.currentTime,.08);}}
+ focus(focused){this.focused=focused;this.apply();}
  tone(freq,duration=.2,type='sine',volume=.2,bus='sfx',delay=0,endFreq=null){
   const c=this.context;if(!c)return;const t=c.currentTime+delay,o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(freq,t);if(endFreq)o.frequency.exponentialRampToValueAtTime(Math.max(1,endFreq),t+duration);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(volume,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+duration);o.connect(g).connect(this.buses[bus]);o.start(t);o.stop(t+duration+.05);
  }

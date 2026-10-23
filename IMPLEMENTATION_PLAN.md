@@ -1,20 +1,25 @@
-# Aetherwild implementation plan
+# Implementation plan
 
-## Milestone 1 — The Basin That Breathes (in progress)
-A complete compact adventure, aiming for 15–30 minutes on a curious first visit.
+## Completed increment — 0.3 foundation
+Rebuilt the rejected blockout's environment/character/camera presentation; integrated Eda's signal story, two working abilities, recoverable construction, combat/lock-on, intake puzzle, choice consequences, useful rewards, named save slots and real quality controls. Browser journey reached the ending and reloaded it; the earned raft reconstructed, sailed and persisted. See BUILD_STATUS.md for the full evidence boundary.
 
-Acceptance: title/new/continue; responsive third-person movement, jump and sailcloth; camp with an NPC; visible horizon objective; Threadbind with selection, preview, rotation, attachment, detach and undo; repairable crossing with a physical alternative; readable encounter; environmental puzzle; useful reward and an ending with a world consequence; inventory, journal, map, settings and pause; validated versioned persistence; real browser journey and logic tests.
+This completes a compact foundation increment, not the master brief's 20–40 minute three-layer milestone.
 
-## Milestone 2 — The Loom's other voices (planned)
-Introduce Impulse Vessel, Bloomwake and Echo Lens through individual experiments. Test a bounded interaction matrix, then combined puzzles. Add general component recipes after the first construction loop is stable.
+## Next — one connected 20–40 minute expedition
+1. Add a playable opening room with Eda: observation, a repair and a flooded gap before the disaster. Short skippable scenes must return control reliably.
+2. Build one small reachable sky route and a controlled descent into the basin. Preserve the existing camp and saves.
+3. Add one cave connected to a readable entrance, light/navigation decisions and a memory clue.
+4. Expand the current quest with an optional local NPC branch and a concluding encounter/discovery. Test order-independent states.
+5. Run a fresh and loaded complete journey, lost-object recovery, ability invalid/cancel cases, raft reconstruction, physical gamepad/focus/menu audit and a sustained performance run.
 
-## Milestone 3 — A region with a life (planned)
-Expand Mossglass into a settlement, regional quest chain, travel economy and creature ecology. Author a full reservoir dungeon, shortcuts, optional rooms and a boss.
+Acceptance: all three spaces are genuinely playable and connected; at least two approaches where authored; Weave/Threadbind and Rise have successful uses and clear failures; progression/rewards/constructions survive saves; no advertised placeholder options; measured duration and performance recorded. Fix crash/save/progression/controller/camera failures before adding content.
 
-## Milestone 4 — Three connected layers (planned)
-Build a playable Crown archipelago and Rootsea biome; add streaming and vehicle-relative travel; verify saves across boundaries and persistent machinery consequences.
+## Later milestones — planned
+- Reconcile the ability roadmap; implement Bind, Echo, Pattern improvements and Survey individually with bounded rules and tested combinations.
+- Expand Mossglass settlement, economy and one full environmental dungeon/boss.
+- Introduce streaming and persistent travel between all three layers.
+- Develop four order-flexible regional investigations and allies, then additional regions through the proven pipeline.
+- Build the Rootsea caretaker arc, false-return evidence states, prepared/early finale approaches and the local-anchor ending.
+- Broad accessibility, input-device, performance, memory, balance and content polish; accurate playable packaging.
 
-## Milestones 5–10 (planned)
-Add regions using the proven pipeline; broaden systemic encounters; finish six distinct dungeons and the nonlinear main narrative; balance, accessibility audit, prolonged performance passes, and package the full adventure. The proposed eight surface regions, four sky groups and five underground biomes are production targets, not implemented claims.
-
-Each milestone stops for critical crash, save, progression, movement and construction failures before adding content. BUILD_STATUS.md records evidence and scope.
+Engine migration requires a measured blocker and concrete plan. No migration is currently justified for the next slice. The game remains on its existing Three.js stack.
