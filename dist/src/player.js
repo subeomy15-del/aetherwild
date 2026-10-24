@@ -86,7 +86,7 @@ export class Player{
    else this.jumpBuffer=.16;
   }
   if(input.hit('dodge')&&!g.loom&&s.stamina>=16&&this.dodgeTime===0){s.stamina-=16;this.dodgeTime=.34;this.invincible=.26;const a=len>.1?Math.atan2(moveX,moveZ):this.facing;this.vel.x=Math.sin(a)*12;this.vel.z=Math.cos(a)*12;g.audio.play('swing');}
-  if(input.hit('attack')&&!g.loom&&!g.rise?.aiming&&!this.swimming&&this.attackCooldown<=0){this.heavy=input.down('sprint')||input.down('heavy');this.attackTime=this.heavy?.65:.36;this.attackCooldown=this.heavy?.85:.43;this.attacked=false;if(this.heavy)s.stamina=Math.max(0,s.stamina-12);g.audio.play('swing');}
+  if(input.hit('attack')&&!g.loom&&!g.rise?.aiming&&!g.echo?.aiming&&!this.swimming&&this.attackCooldown<=0){this.heavy=input.down('sprint')||input.down('heavy');this.attackTime=this.heavy?.65:.36;this.attackCooldown=this.heavy?.85:.43;this.attacked=false;if(this.heavy)s.stamina=Math.max(0,s.stamina-12);g.audio.play('swing');}
   if(this.attackTime>0){this.attackTime-=dt;const threshold=this.heavy?.32:.2;if(this.attackTime<threshold&&!this.attacked){g.combatHit(this.heavy);this.attacked=true;}}
   if(input.hit('heal'))g.heal();
   const ground=g.world.surfaceAt(this.pos.x,this.pos.z,this.pos.y,g.state,g.held?.id);
@@ -129,7 +129,7 @@ export class Player{
   }
   if(this.gliding){s.stamina-=dt*(g.state.facts.rewarded?2.4:5);if(s.stamina<=0){this.gliding=false;g.toast('Your arms are tired. Find a place to land.');}}
   else if(sprint&&this.grounded)s.stamina-=dt*9;
-  else if(!this.swimming&&!this.climbing&&this.dodgeTime===0&&!blocking)s.stamina=Math.min(s.maxStamina,s.stamina+dt*20);
+  else if(this.grounded&&!g.echo?.playback&&!this.swimming&&!this.climbing&&this.dodgeTime===0&&!blocking)s.stamina=Math.min(s.maxStamina,s.stamina+dt*20);
   s.stamina=clamp(s.stamina,0,s.maxStamina);
   if(this.swimming&&s.stamina<=0){g.damage(1,null);this.pos.copy(new T.Vector3(g.state.safe.x,g.state.safe.y,g.state.safe.z));this.vel.set(0,0,0);s.stamina=s.maxStamina*.5;g.toast('Sella’s safety line brings you back to shore.');}
   if(lockedTarget){const target=Math.atan2(lockedTarget.x-this.pos.x,lockedTarget.z-this.pos.z);this.facing+=Math.atan2(Math.sin(target-this.facing),Math.cos(target-this.facing))*(1-Math.exp(-dt*20));}

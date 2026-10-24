@@ -1,4 +1,4 @@
-# Systems — 0.3
+# Systems — 0.4
 
 ## Stack and ownership
 Vendored Three.js r160, native ES modules, dependency-free Node HTTP server and node:test. M4 / 16 GB target: 60 fps High, 30 fps fallback. Representative browser observations are in BUILD_STATUS.md.
@@ -18,7 +18,7 @@ Rise accepts an authored stable canopy, at most 3 paces thick and 16 above the p
 Blueprints serialize part kinds and relative position/yaw. Reconstruction validates IDs, limits, bounds and costs before spending. Ground/raft buoyancy normalization ensures stable placement. They reconstruct actual working components; general joints, powered settings and broad assembly physics remain future work.
 
 ## Persistence
-Save schema v3 migrates v1/v2, retaining inventories, quest facts, discoveries and builds while adding expedition metadata/available abilities. localStorage stores checked payloads with checksum, staging readback, atomic main-key replacement and prior backup. Slot 1 retains aetherwild.save.v2 for backward compatibility; other slots have independent keys. Occupied or corrupt slots cannot be silently replaced. Loading another expedition requires confirmation and saves the current one first.
+Save schema v4 migrates v1/v2/v3, retaining inventories, quest facts, discoveries and builds while retaining expedition metadata and adding Echo/the courier when capacity permits. localStorage stores checked payloads with checksum, staging readback, atomic main-key replacement and prior backup. Slot 1 retains aetherwild.save.v2 for backward compatibility; other slots have independent keys. Occupied or corrupt slots cannot be silently replaced. Loading another expedition requires confirmation and saves the current one first.
 
 Position, safe respawn, health/stamina, inventory, facts, discoveries, collection/defeats, objects, patterns and pins persist. Unsafe air/water/combat saves use safe ground. Riding state is transient; the raft and its position persist, allowing reboarding. Settings are separately validated. Normal origins have independent browser storage; ?qa=1 isolates QA in tab sessionStorage.
 
@@ -33,3 +33,13 @@ Position, safe respawn, health/stamina, inventory, facts, discoveries, collectio
 | Fire / electricity / ice / broad heat | Planned | No silent simulation |
 
 Menus stop gameplay input/simulation. Escape cannot resume a defeated character. Loss of pointer capture/focus pauses play. Physical gamepad navigation/rebinding and disconnect handling need a dedicated verification pass.
+
+## Echo ownership and lifecycle — v0.4
+
+motion-history.js owns session buffers: 24 tracks, at most 162 samples each, maximum 20 Hz and eight seconds. Removed IDs are pruned. Discontinuous moves above four paces start a new history rather than traversing a teleport. Playback copies the bounded path, interpolates yaw through the shortest arc, clamps its own frame step and checks swept poses every 0.2 paces. It stops before world bounds, terrain, authored obstacles, another part or the player. These conservative kinematic checks are not general continuous rigid-body collision.
+
+echo.js owns targeting, path/endpoint meshes and playback. During playback it is the sole transform writer. The courier’s driveStopped flag disables its normal rail driver and persists its settled state. It costs 10 stamina plus 2/second; grounded regeneration is disabled while returning an object. Attached parts, seated vehicles and nearby passengers are rejected. There are no joint assemblies or carried passengers to restore.
+
+Only play frames advance histories and the courier. Menus/focus loss freeze them; reopening the ability wheel or switching abilities cancels playback. Saving cancels at the current valid transform, then writes a stable snapshot. Loading/new expeditions clear histories. Death freezes gameplay, retry cancels; travel/recovery cancels. Discrete construction undo does not undo rewards or inventory. History/time samples are never serialized. The original eight-second recording is consumed on cancellation/completion.
+
+The courier archive uses claimCourierArchive for one atomic materials/blueprint/collected-fact transaction. Reset is recoverable and does not revoke or repeat rewards. v3 migration appends the tutorial courier only if the 24-part cap permits; its winch can restore it after an owned part is dismantled. No full slot is overwritten.

@@ -1,5 +1,5 @@
-export const VERSION = '0.3.0';
-export const SAVE_VERSION = 3;
+export const VERSION = '0.4.0';
+export const SAVE_VERSION = 4;
 export const clamp = (n,a,b) => Math.max(a,Math.min(b,n));
 export const lerp = (a,b,t) => a+(b-a)*t;
 export const smooth = (a,b,v) => {const t=clamp((v-a)/(b-a),0,1);return t*t*(3-2*t);};
@@ -7,7 +7,7 @@ export const distance = (a,b) => Math.hypot(a.x-b.x,a.z-b.z);
 export const riverZ = x => 42+4*Math.sin(x*.025);
 export function heightAt(x,z) {
   let h=7+2.2*Math.sin(x*.025)*Math.cos(z*.026)+1.3*Math.sin(x*.065+z*.036);
-  for (const [cx,cz,r,y] of [[0,102,38,10],[-28,42,30,5.5],[-15,-16,25,9],[0,-103,38,19],[74,-45,24,7],[-98,2,38,26],[110,100,30,18]]) {
+  for (const [cx,cz,r,y] of [[25.5,91,28,10],[0,102,38,10],[-28,42,30,5.5],[-15,-16,25,9],[0,-103,38,19],[74,-45,24,7],[-98,2,38,26],[110,100,30,18]]) {
     const f=1-smooth(r*.45,r,Math.hypot(x-cx,z-cz));h=lerp(h,y,f);
   }
   const lake=(x-68)**2/46**2+(z-35)**2/43**2;
@@ -25,18 +25,20 @@ export const ITEMS={
   fiber:{name:'Woven fiber',icon:'fiber',desc:'Reed thread, surprisingly strong. Used for panels and repairs.',color:'#bfce9a'},
   broth:{name:'Reedroot broth',icon:'flask',desc:'A warm field meal. Restores 3 health segments.',color:'#f3b883'},
   glass:{name:'Mossglass',icon:'crystal',desc:'A light-carrying mineral. Sella can reinforce your sailcloth with it.',color:'#7addca'},
-  regulator:{name:'Weather regulator',icon:'loom',desc:'Bellwether’s ceramic memory. It holds Eda’s first signal after the pulse.',color:'#ead9b5'},
+  regulator:{name:'Weather regulator',icon:'loom',desc:'Bellwether’s local routing ledger, disconnected from the remote command line.',color:'#ead9b5'},
 };
 export const COMPONENTS={
   panel:{name:'Reedwood panel',mass:18,cost:{copper:1,fiber:2},size:[5.8,.45,11.4],color:0xc8a878},
   counterweight:{name:'Ceramic counterweight',mass:60,cost:{copper:3},size:[2.8,2.8,2.8],color:0xd9d7bd},
   raft:{name:'Reedwake raft',mass:32,cost:{copper:2,fiber:4},size:[6,.65,8],color:0xb28c58},
 };
+export const COURIER={id:'echo-courier',driveStopped:false,kind:'counterweight',x:18,y:11.45,z:91,rot:0,socket:null};
 export const INITIAL_OBJECTS=[
   {id:'panel-a',kind:'panel',x:-20,y:heightAt(-20,63)+.25,z:63,rot:0,socket:null},
   {id:'panel-b',kind:'panel',x:-37,y:heightAt(-37,63)+.25,z:63,rot:Math.PI/2,socket:null},
   {id:'weight-a',kind:'counterweight',x:13,y:heightAt(13,-84)+1.4,z:-84,rot:0,socket:null},
   {id:'raft-a',kind:'raft',x:51,y:3.8,z:41,rot:0,socket:null},
+  {...COURIER},
 ];
 export const SOCKETS=[
   {id:'crossing-south',kind:'panel',x:-28,y:5.55,z:47.6,rot:0,label:'South bracket'},
@@ -67,26 +69,21 @@ export const ENEMIES=[
  {id:'scrapper-2',kind:'scavenger',x:-26,z:-17,hp:3},
  {id:'sentinel-1',kind:'sentinel',x:0,z:-73,hp:5},
 ];
-export const DEFAULT_SETTINGS={master:.8,music:.42,sfx:.7,ambient:.6,sensitivity:1,gamepadSensitivity:1,invertY:false,reducedMotion:false,highContrast:false,textScale:1,subtitles:true,climbAssist:true,sprintToggle:false,muteUnfocused:true,showCompass:true,showMinimap:true,guidance:true,resolution:1.5,vegetation:1,shadowDistance:48,quality:'high',bindings:{forward:'KeyW',back:'KeyS',left:'KeyA',right:'KeyD',jump:'Space',sprint:'ShiftLeft',interact:'KeyE',ability:'KeyQ',lockOn:'KeyT',abilityWheel:'Tab',weave:'Digit1',rise:'Digit2',dodge:'KeyC',attack:'Mouse0',attackAlt:'KeyX',block:'Mouse2',inventory:'KeyI',journal:'KeyJ',map:'KeyM',pause:'Escape',heal:'KeyH',rotate:'KeyR',detach:'KeyF',undo:'KeyZ'}};
-export const ACTION_LABELS={forward:'Move forward',back:'Move backward',left:'Move left',right:'Move right',jump:'Jump / sailcloth',sprint:'Sprint',interact:'Interact / place',ability:'Use selected ability',lockOn:'Target lock',abilityWheel:'Ability wheel',weave:'Threadbind direct',rise:'Rise direct',dodge:'Dodge',attack:'Light attack',attackAlt:'Alternate light attack',block:'Block / timed guard',inventory:'Satchel',journal:'Journal',map:'Map',pause:'Pause',heal:'Drink broth',rotate:'Rotate held object',detach:'Detach',undo:'Undo construction'};
+export const DEFAULT_SETTINGS={master:.8,music:.42,sfx:.7,ambient:.6,sensitivity:1,gamepadSensitivity:1,invertY:false,reducedMotion:false,highContrast:false,textScale:1,subtitles:true,climbAssist:true,sprintToggle:false,muteUnfocused:true,showCompass:true,showMinimap:true,guidance:true,resolution:1.5,vegetation:1,shadowDistance:48,quality:'high',bindings:{forward:'KeyW',back:'KeyS',left:'KeyA',right:'KeyD',jump:'Space',sprint:'ShiftLeft',interact:'KeyE',ability:'KeyQ',lockOn:'KeyT',abilityWheel:'Tab',weave:'Digit1',rise:'Digit2',echo:'Digit3',dodge:'KeyC',attack:'Mouse0',attackAlt:'KeyX',block:'Mouse2',inventory:'KeyI',journal:'KeyJ',map:'KeyM',pause:'Escape',heal:'KeyH',rotate:'KeyR',detach:'KeyF',undo:'KeyZ'}};
+export const ACTION_LABELS={forward:'Move forward',back:'Move backward',left:'Move left',right:'Move right',jump:'Jump / sailcloth',sprint:'Sprint',interact:'Interact / place',ability:'Use selected ability',lockOn:'Target lock',abilityWheel:'Ability wheel',weave:'Threadbind direct',rise:'Rise direct',echo:'Echo direct',dodge:'Dodge',attack:'Light attack',attackAlt:'Alternate light attack',block:'Block / timed guard',inventory:'Satchel',journal:'Journal',map:'Map',pause:'Pause',heal:'Drink broth',rotate:'Rotate held object',detach:'Detach',undo:'Undo construction'};
 export const OPENING={
- title:'The morning the horizon moved',
- captions:[
-  {speaker:'EDA · LAST TRANSMISSION',text:'Iri, the bell is ringing below us. That isn’t possible.',duration:4},
-  {speaker:'REEDWAKE CAMP · DAWN',text:'One pulse. The horizon opened.',duration:3.5},
-  {speaker:'IRI · EXPEDITION MECHANIC',text:'Her tether came back. She didn’t.',duration:4},
- ],
- edaQuote:'If the line goes quiet, follow what the machines remember.',
- aftermath:'Eda is missing. Bellwether caught the pulse. Find its record.',
- objective:'Speak with Sella at Reedwake Camp.',
+ title:'The Last Forecast',
+ edaQuote:'It counted the houses, Iri. Then it marked the valley empty.',
+ aftermath:'Eda entered Bellwether to challenge its forecast. Her last courier returned without her.',
+ objective:'Speak with Sella. Examine Eda’s courier east of camp.',
 };
 export const CHAPTERS=[
- {stage:0,title:'The line went quiet',objective:'Speak with Sella at Reedwake Camp.',detail:'A pulse from the weather engine tore open the horizon. Your expedition partner Eda vanished; her tether washed back to camp. Sella may know where to begin.'},
- {stage:1,title:'Follow the broken line',objective:'Reach Bellwether Intake in the north.',detail:'Bellwether caught the pulse that took Eda. Find its transit record. Threadbind [Q] can move the crossing’s marked panels into their brackets. The western stones, water and ridge offer other approaches.'},
- {stage:2,title:'A voice behind the iris',objective:'Balance the intake’s counterweight cradle.',detail:'The regulator’s memory is behind the closed iris. Move the marked ceramic weight onto its teal cradle with Threadbind. The nearby recall winch recovers a lost weight.'},
- {stage:3,title:'The first signal',objective:'Choose a water route at the regulator.',detail:'Read Bellwether’s memory for Eda’s signal, then release the intake. The surface channels will clear the old road; the root spillway will sustain the luminous hollow. Either route can carry the recovered record back to camp.'},
- {stage:4,title:'She crossed alive',objective:'Return to Sella at Reedwake Camp.',detail:'Eda’s signal names the Ninth Relay, somewhere in the fractured Crown. Bring Sella the regulator so the expedition can plan its next move. The field map offers travel to discovered camp beacons.'},
- {stage:5,title:'A signal beyond the clouds',objective:'First chapter complete. Explore Mossglass Basin.',detail:'You found evidence that Eda survived the pulse. The Ninth Relay is the next lead in the planned adventure; it is not accessible in this prototype. Your reinforced sailcloth uses less stamina. The hollow, shore and surveyor’s bluff still hold useful discoveries.'},
+ {stage:0,title:'The Last Forecast',objective:'Speak with Sella at Reedwake Camp.',detail:'Bellwether has issued a forecast for the next engine cycle: the Listening Hollow is to be written off. Eda entered the intake to challenge it. Her courier came back alone. Sella is sheltering the people the forecast calls absent.'},
+ {stage:1,title:'An occupied silence',objective:'Reach Bellwether Intake in the north.',detail:'Find the routing ledger before the next cycle. Eda’s courier east of camp holds optional testimony: reset its winch, select Echo from the ability wheel, rewind the moving weight and cancel over the amber plate. Threadbind can also place it there. Cross the river using panels, the western stones or water.'},
+ {stage:2,title:'The weight of permission',objective:'Balance the intake’s counterweight cradle.',detail:'Bellwether asks for a maintenance weight before it will admit a person. Lift the ceramic weight onto its teal cradle with Threadbind [Q]. The nearby winch recalls a lost weight. The system still accepts its old permissions; it has stopped asking who they protect.'},
+ {stage:3,title:'Two useful futures',objective:'Read the ledger and choose a local water route.',detail:'Keep the hollow’s root spillway flowing to sustain its luminous canopy and updraft, or reopen the surface crossing so camp supplies can move. The damaged regulator can maintain one branch. Neither choice restores the old network. Both leave work for the people who live here.'},
+ {stage:4,title:'A forecast refused',objective:'Bring the regulator to Sella at Reedwake Camp.',detail:'Eda deliberately severed the remote command line. Her regulator lets the basin choose locally. Return it to Sella so that choice outlasts a single expedition. Discovered camp beacons can be reached from the field map.'},
+ {stage:5,title:'Some things worth fixing differently',objective:'Chapter complete. Explore the basin and Eda’s courier archive.',detail:'Mossglass has a locally chosen route. Your reinforced sailcloth drains less stamina. Eda’s next destination, the Census Engine, is planned content beyond this playable basin. The courier archive, canopy cache, hollow and western lookout still offer discoveries.'},
 ];
 export function questStage(state){
  if(state.facts.rewarded)return 5;
@@ -97,14 +94,15 @@ export function questStage(state){
  return 0;
 }
 export const DIALOGUE={
- intro:[['Sella Venn','Field researcher'],['Eda’s tether washed up before you did. No blood. The signal thread was still warm.','Bellwether caught the pulse. If it kept a transit record, we can find where it sent her. That ceramic ring on the northern ridge.','The crossing is out. Your Loom can lift the marked panels into the brackets—or find a quicker way. Bring me the record, Iri.']],
- progress:[['Sella Venn','Field researcher'],['Bellwether’s memory is inside its intake. If the iris is shut, look for a counterweight cradle and a marked ceramic weight.','And Iri? Eda left a message before she went ahead: “Tell them I want my good wrench back.” I’m keeping it safe.']],
- root:[['Sella Venn','Field researcher'],['That’s her voice. After the pulse. She made it through.','The Ninth Relay... I’ve seen that name on an old Crown chart. I’ll find it. You kept the hollow alive; perhaps those roots know a way up.','Take this. I reinforced your sailcloth with mossglass. If we’re following Eda into the sky, you’ll need more than stubbornness.']],
- old:[['Sella Venn','Field researcher'],['That’s Eda. She made it through—and she left us a place to look. The Ninth Relay.','The old road will dry now. We can get supplies in while I search the Crown charts. I’ll move what I can from the hollow before it goes dark.','Your sailcloth is reinforced. Mossglass in the weave. You found her signal, Iri. That’s our first step.']],
- complete:[['Sella Venn','Field researcher'],['I’m still matching the Ninth Relay to the old charts. No route yet. You don’t have to keep standing over my shoulder.','There’s a surveyor’s notebook on the western bluff, and Eda visited the roots east of the ruins before the pulse. We might have missed something.']],
- record:[['Bellwether emergency buffer · Today, 06:14','Recovered signal · Eda'],['“Iri. I’m alive. The pulse didn’t throw me—it moved the room. There’s sky outside the floor. Find the Ninth Relay. And don’t reset the network. Not yet.”','Her signal passed through Bellwether after the horizon opened. Beneath it, a much older entry: FRACTURE COMMAND ACCEPTED. The engines’ fall was authorized. By whom, the record does not say.','The intake must release into one surviving route. Surface channels will clear the expedition road. The lower spillway will feed the luminous hollow. Either can power the memory transfer; the regulator cannot supply both.']],
- hollow:[['Eda’s field note','Written before the pulse'],['“Iri says the roots are humming because I hit my head on the supply shelf. The roots stop whenever I try to record them. This is not helping my case.”','Below it, a careful diagram: the roots are wrapped around a buried signal conduit. “The engines call this ground empty. Something down there disagrees.”']],
- bluff:[['Surveyor’s notebook','An older expedition'],['“Bellwether below. The Crown beyond. Between them, broken machinery still turns toward a station our charts have lost: the Ninth Relay.”','A second hand added, years later: “There is a route. The weather is using it.”']],
- echo:[['A thread in the air','Eda’s trail · Memory trace'],['The broken signal catches for an instant. Eda, laughing: “If I’m late, check the intake before you organize a funeral.”','Her outline turns toward Bellwether, then the trace breaks into the wind. A fragment, not a path.']],
- loom:[['Wayfarer Loom','Field guide'],['[Q] enters Threadbind. Look at a marked panel, weight or raft, then [E] to lift it. Move and turn the camera to position it.','Teal brackets accept matching parts. A solid teal preview means the joint is aligned; amber means a free placement. [R] rotates the object. [E] commits.','[F] detaches a part. [Z] undoes the last operation. Every essential puzzle has a local reset. Blueprints in the fieldbook store actual component arrangements.']],
+ intro:[['Sella Venn','Field researcher'],['Seven people slept in my tent last night. Bellwether’s forecast says nobody lives below the intake. I would enjoy showing it my breakfast bill.','Eda went north to correct the ledger. Her courier came back without her. The moving weight east of camp can open its archive; your brace’s Echo can return its recent motion.','Then find Bellwether’s regulator. The crossing panels fit the old brackets. The stones to the west are less dignified, but just as effective.']],
+ progress:[['Sella Venn','Field researcher'],['The intake’s iris opens under a ceramic counterweight. Its recall winch is on the right if the weight gets lost.','Eda’s courier east of camp carries her reasons for going in. You can read it before or after the intake. A person’s reasons ought to survive the paperwork.']],
+ root:[['Sella Venn','Field researcher'],['You left the hollow its water. The roots are lifting warm air again. That gives us a route above the flood.','We still need a supply crossing. I can ask the salvagers for panels; I cannot ask a dead grove to grow back tomorrow.','Eda cut the line so we could decide. We’ll keep the regulator here, where people can argue with it. Take this reinforced sailcloth. You’ve earned a longer reach.']],
+ old:[['Sella Venn','Field researcher'],['The surface crossing is open. The next supply party can bring food without swimming it across.','The hollow’s canopy has dimmed. I’ll keep its samples alive here while we work on a second water line. A useful repair still has a cost.','Eda cut the line so we could decide. The regulator stays here, with us. I reinforced your sailcloth. There is more work ahead, but tonight we can feed everyone.']],
+ complete:[['Sella Venn','Field researcher'],['The regulator is staying at camp. Nobody gets to call this valley empty from somewhere comfortable.','Eda’s ledger names the Census Engine. I’m looking for a route; there isn’t one in our surveyed basin yet. If you haven’t read her courier archive, start east of camp.']],
+ record:[['Bellwether · Local routing ledger','Eda Rook · maintenance objection'],['“Iri. I cut the command line. I know what that sounds like. The forecast was not predicting a flood. It was scheduling one, and charging the cost to a valley marked empty.”','“There are names in the margins. Generations of them. Each engineer thought they were saving the places that mattered. I followed the account back to the Census Engine. If I don’t return, don’t reconnect me to it.”','The regulator still holds two local circuits. One feeds the living hollow and its warm updraft. The other raises a crossing through the surface channel. It cannot hold both. This time the choice belongs to someone standing here.']],
+ testimony:[['Eda’s unfiled objection','Courier archive · recovered testimony'],['“Sella asked me to count the hollow’s nests. Forty-three, if you count the one in my boot. Bellwether counted zero. Not because its instruments failed. Because its definition of a home has not changed in six hundred years.”','“I could amend the record. Somebody at the Census Engine could amend it back. So I’m taking the regulator off their line. I want a machine you can disagree with without being washed away.”','A working diagram accompanies the objection: two reedwood panels, staggered into a crossing. You record the pattern and take the courier’s field materials.']],
+ hollow:[['A note tied to a root','Eda Rook'],['“The canopy hums whenever the intake opens. The roots are using the old conduit as a lung. Sella calls this adaptation. I call it an engineering qualification.”','Below it: seven names, with sleeping places and dietary complaints. These are the people Bellwether’s ledger has failed to count.']],
+ bluff:[['Surveyor’s notebook','A crossed-out forecast'],['A chart labels the lower valley UNINHABITED. A later hand has drawn a cooking fire over the word.','“If your map cannot find a village, first check whether your map has decided not to see one.” An arrow points toward Bellwether’s ledger room.']],
+ echo:[['A thread in the air','Eda’s unfinished survey'],['The brace catches a voice: “Yes, I signed the objection. No, I did not ask the engine’s permission to object.”','A second voice asks whether she has a plan. “Several. One of them is even sensible.” The recording ends before she explains which.']],
+ loom:[['Wayfarer Loom','Field guide'],['[Q] uses the selected ability; the ability wheel offers Threadbind, Rise and Echo. Threadbind lifts marked panels, weights and rafts with [E].','Teal brackets accept matching parts. [R] rotates; [E] commits; [F] detaches; [Z] undoes. Canceling a held part restores its original position.','Echo records eight seconds of eligible free-object motion. Select it from the wheel, confirm with [E], and cancel [Q] to settle the object. It cannot rewind attached parts or carry passengers. Reset the courier east of camp for a safe experiment.']],
 };

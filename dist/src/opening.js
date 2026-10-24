@@ -3,7 +3,7 @@ import {clamp,smooth,OPENING} from './data.js';
 export class Opening{
  constructor(game){
   this.g=game;this.time=0;this.done=false;this.triggered=false;
-  this.overlay=document.createElement('div');this.overlay.className='cinema';this.overlay.innerHTML='<div class="cinema-bar top"></div><div class="cinema-bar bottom"></div><div class="cinema-chapter"><span>THREE NIGHTS AFTER EDA VANISHED</span><h2>Mossglass Basin</h2></div><div class="cinema-dialogue"><span>EDA · LAST RECORDED TRANSMISSION</span><p>“'+OPENING.edaQuote+'”</p></div><button class="cinema-skip">Hold on to the thread <b>[ SPACE ] Skip</b></button>';
+  this.overlay=document.createElement('div');this.overlay.className='cinema';this.overlay.innerHTML='<div class="cinema-bar top"></div><div class="cinema-bar bottom"></div><div class="cinema-chapter"><span>THE NEXT CYCLE HAS ALREADY BEEN SCHEDULED</span><h2>Mossglass Basin</h2></div><div class="cinema-dialogue"><span>EDA · LAST RECORDED TRANSMISSION</span><p>“'+OPENING.edaQuote+'”</p></div><button class="cinema-skip">Hold on to the thread <b>[ SPACE ] Skip</b></button>';
   game.ui.overlay.innerHTML='';game.ui.overlay.append(this.overlay);game.ui.hud.hidden=true;game.mode='opening';game.input.enabled=false;game.input.unlock();
   this.overlay.querySelector('button').addEventListener('click',()=>this.finish());
   this.ring=new T.Mesh(new T.RingGeometry(.93,1,128),new T.MeshBasicMaterial({color:0x8bf5d2,transparent:true,opacity:0,side:T.DoubleSide,depthWrite:false,blending:T.AdditiveBlending}));this.ring.rotation.x=-Math.PI/2;this.ring.position.set(0,21,-105);game.scene.add(this.ring);
@@ -21,5 +21,5 @@ export class Opening{
   const pulse=clamp((t-3.1)/3.3,0,1);this.ring.scale.setScalar(1+pulse*190);this.ring.material.opacity=t>3.1?(1-pulse)*.48:0;this.ring.position.y=18-pulse*4;this.beam.material.opacity=t>3.1&&t<6?Math.sin((t-3.1)/2.9*Math.PI)*.42:0;
   if(t>11.7)this.finish();
  }
- finish(){if(this.done)return;this.done=true;const g=this.g;g.scene.remove(this.ring,this.beam);this.ring.geometry.dispose();this.ring.material.dispose();this.beam.geometry.dispose();this.beam.material.dispose();g.opening=null;g.player.camInitialized=false;g.ui.play();g.toast('Find Sella. She heard it too.');g.toast('WASD move · Shift sprint · Space jump / sailcloth · E interact');g.save(false);}
+ finish(){if(this.done)return;this.done=true;const g=this.g;g.scene.remove(this.ring,this.beam);this.ring.geometry.dispose();this.ring.material.dispose();this.beam.geometry.dispose();this.beam.material.dispose();g.opening=null;g.player.camInitialized=false;g.ui.play();g.toast('Find Sella. Eda’s courier has returned east of camp.');g.toast(g.input.label('forward')+' move · '+g.input.label('sprint')+' sprint · '+g.input.label('jump')+' jump / sailcloth · '+g.input.label('interact')+' interact');g.save(false);}
 }

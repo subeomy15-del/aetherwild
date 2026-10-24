@@ -1,4 +1,4 @@
-import {SAVE_VERSION,START,INITIAL_OBJECTS,DEFAULT_SETTINGS,COMPONENTS,clamp,questStage} from './data.js';
+import {SAVE_VERSION,START,INITIAL_OBJECTS,DEFAULT_SETTINGS,COMPONENTS,COURIER,clamp,questStage} from './data.js';
 export const clone = v => JSON.parse(JSON.stringify(v));
 let idSequence=0;
 function nextId(prefix,occupied=[]){
@@ -6,7 +6,7 @@ function nextId(prefix,occupied=[]){
  do{id=prefix+'-'+Date.now().toString(36)+'-'+(idSequence++).toString(36);}while([...ids].some(existing=>existing===id||existing.startsWith(id+'-')));
  return id;
 }
-export function freshState(){return {version:SAVE_VERSION,expedition:{name:'First Expedition'},abilities:['weave','rise'],player:{...START,hp:6,maxHp:6,stamina:100,maxStamina:100},safe:{...START},inventory:{copper:3,fiber:4,broth:3,glass:0,regulator:0},facts:{metSella:false,intakeOpen:false,route:null,rewarded:false},discovered:['reedwake'],collected:[],defeated:[],objects:clone(INITIAL_OBJECTS),blueprints:[],pins:[],playtime:0,saveTime:null};}
+export function freshState(){return {version:SAVE_VERSION,expedition:{name:'First Expedition'},abilities:['weave','rise','echo'],player:{...START,hp:6,maxHp:6,stamina:100,maxStamina:100},safe:{...START},inventory:{copper:3,fiber:4,broth:3,glass:0,regulator:0},facts:{metSella:false,intakeOpen:false,route:null,rewarded:false},discovered:['reedwake'],collected:[],defeated:[],objects:clone(INITIAL_OBJECTS),blueprints:[],pins:[],playtime:0,saveTime:null};}
 export function transact(inventory,delta){
  if(!inventory||!delta||Object.entries(delta).some(([k,n])=>!Object.hasOwn(inventory,k)||!Number.isSafeInteger(n)||inventory[k]+n<0||inventory[k]+n>999))return false;
  for(const [k,n] of Object.entries(delta))inventory[k]+=n;return true;
@@ -45,14 +45,23 @@ export function reconstruct(state,bp,origin){
  if(!transact(state.inventory,Object.fromEntries(Object.entries(cost).map(([k,v])=>[k,-v]))))return {ok:false,message:'Missing materials: '+Object.entries(cost).map(([k,v])=>v+' '+k).join(', ')};
  state.objects.push(...objects);return {ok:true,objects};
 }
+export function claimCourierArchive(state){
+ if(state.collected.includes('courier-testimony'))return {ok:false,message:'This testimony is already recorded.'};
+ const weight=state.objects.find(o=>o.id===COURIER.id);
+ if(!weight||weight.kind!=='counterweight'||Math.abs(weight.x-25.5)>1.5||Math.abs(weight.z-91)>1.5||Math.abs(weight.y-11.45)>.6)return {ok:false,message:'Settle the courier weight on the amber plate. Echo or Threadbind can do this.'};
+ if(state.blueprints.length>=12)return {ok:false,message:'Your fieldbook has 12 patterns. Remove one before recording the courier’s crossing kit.'};
+ if(!transact(state.inventory,{copper:3,fiber:4,glass:2}))return {ok:false,message:'Make room in your material stacks before opening the archive.'};
+ state.collected.push('courier-testimony');state.blueprints.push({id:'bp-courier-crossing',name:'Courier crossing kit',parts:[{kind:'panel',x:0,y:0,z:0,rot:0},{kind:'panel',x:0,y:0,z:-11.4,rot:0}]});return {ok:true};
+}
 export function checksum(text){let h=2166136261;for(let i=0;i<text.length;i++){h^=text.charCodeAt(i);h=Math.imul(h,16777619);}return (h>>>0).toString(16);}
 export function validateState(raw){
- if(!raw||typeof raw!=='object'||Array.isArray(raw)||![1,2,3].includes(raw.version))throw Error('Unrecognized save version.');
+ if(!raw||typeof raw!=='object'||Array.isArray(raw)||![1,2,3,4].includes(raw.version))throw Error('Unrecognized save version.');
  const s=clone(raw);
  if(s.version===1){s.pins??=[];s.blueprints??=[];s.version=2;}
  if(s.version===2){s.expedition??={name:'First Expedition'};s.abilities=['weave','rise'];s.version=3;}
+ if(s.version===3){if(!Array.isArray(s.abilities)||!s.abilities.every(a=>['weave','rise'].includes(a)))throw Error('Invalid legacy ability data.');if(!Array.isArray(s.objects))throw Error('Invalid construction data.');s.abilities=[...new Set([...(s.abilities||[]),'echo'])];if(!s.objects.some(o=>o.id===COURIER.id)&&s.objects.length<24)s.objects.push(clone(COURIER));s.version=4;}
  if(typeof s.expedition?.name!=='string'||!s.expedition.name.trim()||s.expedition.name.length>32)throw Error('Invalid expedition name.');
- if(!Array.isArray(s.abilities)||s.abilities.length>2||!s.abilities.every(a=>['weave','rise'].includes(a)))throw Error('Invalid ability data.');
+ if(!Array.isArray(s.abilities)||s.abilities.length>3||!s.abilities.every(a=>['weave','rise','echo'].includes(a)))throw Error('Invalid ability data.');
  for(const key of ['x','y','z','hp','maxHp','stamina','maxStamina'])if(!Number.isFinite(s.player?.[key]))throw Error('Invalid player state.');
  if(Math.abs(s.player.x)>210||Math.abs(s.player.z)>210||s.player.y < -20||s.player.y>300)throw Error('Invalid player position.');
  if(!s.safe||!['x','y','z'].every(k=>Number.isFinite(s.safe[k])&&Math.abs(s.safe[k])<210))throw Error('Invalid safe position.');
@@ -62,7 +71,7 @@ export function validateState(raw){
  if(!s.facts||!['metSella','intakeOpen','rewarded'].every(k=>typeof s.facts[k]==='boolean')||![null,'roots','channels'].includes(s.facts.route))throw Error('Invalid quest state.');
  if(s.facts.rewarded&&!s.facts.route)throw Error('Impossible quest reward.');
  for(const k of ['discovered','collected','defeated'])if(!Array.isArray(s[k])||s[k].length>512||!s[k].every(v=>typeof v==='string'&&v.length<80))throw Error('Invalid world facts.');
- if(!Array.isArray(s.objects)||s.objects.length>24||new Set(s.objects.map(o=>o.id)).size!==s.objects.length||!s.objects.every(o=>typeof o.id==='string'&&COMPONENTS[o.kind]&&['x','y','z','rot'].every(k=>Number.isFinite(o[k]))&&Math.abs(o.x)<205&&Math.abs(o.z)<205&&o.y>-10&&o.y<200&&(o.socket===null||typeof o.socket==='string')))throw Error('Invalid construction data.');
+ if(!Array.isArray(s.objects)||s.objects.length>24||new Set(s.objects.map(o=>o.id)).size!==s.objects.length||!s.objects.every(o=>typeof o.id==='string'&&COMPONENTS[o.kind]&&['x','y','z','rot'].every(k=>Number.isFinite(o[k]))&&Math.abs(o.x)<205&&Math.abs(o.z)<205&&o.y>-10&&o.y<200&&(o.socket===null||typeof o.socket==='string')&&(o.driveStopped===undefined||typeof o.driveStopped==='boolean')))throw Error('Invalid construction data.');
  if(!Array.isArray(s.blueprints)||s.blueprints.length>12||!s.blueprints.every(b=>typeof b.id==='string'&&typeof b.name==='string'&&b.name.length<=32&&b.parts?.length>0&&b.parts.length<=12&&b.parts.every(p=>COMPONENTS[p.kind]&&['x','y','z','rot'].every(k=>Number.isFinite(p[k])&&Math.abs(p[k])<400))))throw Error('Invalid blueprint data.');
  if(!Array.isArray(s.pins)||s.pins.length>12||!s.pins.every(p=>Number.isFinite(p.x)&&Number.isFinite(p.z)&&Math.abs(p.x)<205&&Math.abs(p.z)<205&&typeof p.note==='string'&&p.note.length<=50))throw Error('Invalid map pins.');
  s.playtime=Number.isFinite(s.playtime)?clamp(s.playtime,0,1e8):0;

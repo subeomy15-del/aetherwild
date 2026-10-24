@@ -24,6 +24,7 @@ export class AudioSystem{
   if(id==='guard'){this.tone(740,.4,'triangle',.23);this.tone(1110,.3,'sine',.14,'sfx',.05);}
   if(id==='hurt')this.tone(110,.4,'triangle',.35,'sfx',0,45);
   if(id==='jump')this.tone(160,.13,'sine',.12,'sfx',0,320);
+  if(id==='echo'){this.tone(740,.65,'sine',.12,'sfx',0,185);this.tone(370,.9,'triangle',.055,'sfx',.09,92.5);}
   if(id==='sail')this.tone(460,.45,'sine',.07,'sfx',0,220);
   if(id==='step')this.tone(70+Math.random()*25,.07,'triangle',.09);
   if(id==='water')this.tone(260,.18,'sine',.12,'sfx',0,80);

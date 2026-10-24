@@ -1,21 +1,25 @@
-# Aetherwild: The Broken Horizon
+# Aetherwild: The Broken Horizon — design v0.4
 
-An original single-player action adventure about repair versus restoration. Ancient weather engines fractured nineteen years ago. New ecosystems grew in the broken network; restoring its original directives could erase them. “The engines fell silent. The wild found its voice.” “Some things are worth fixing differently.”
+An original action adventure about who gets to decide what a repair is for. Ceramic weather engines outlived their makers. Wilderness and communities now occupy places their records call empty. The player is Iri Vale, an expedition mechanic whose Wayfarer Loom reconnects things the network has stopped understanding.
 
-## Current playable chapter
-Iri Vale, an expedition mechanic, searches for missing partner Eda Rook after a renewed engine pulse. Reedwake researcher Sella sends Iri to Bellwether's transit memory. The route offers a repaired aqueduct, swimming and western stones; scavengers contest the ruins. Threadbind positions a counterweight, opening the intake. A recovered signal proves Eda survived and names the Ninth Relay. The regulator must feed either living roots or the old surface channels. Returning the signal grants a reinforced sailcloth and 30 stamina.
+## Playable chapter: The Last Forecast
 
-Rise offers an optional route through the intake canopy to a useful skiff blueprint/cache. The root choice creates an updraft; the channel choice creates a road shortcut. Construction and direct fighting are options, not universal requirements. The exact implemented/verified scope is in BUILD_STATUS.md.
+Bellwether has scheduled the Listening Hollow as the receiving basin for its next balancing cycle. Sella shelters people excluded from its census. Eda Rook entered the intake to challenge the decision; her mechanical courier returned alone. Iri can recover Eda’s unfiled objection by returning a moving weight onto an archive plate. Echo or Threadbind solves it; the testimony and useful construction pattern persist.
 
-## Pillars
-Responsive travel; distinct landmarks; understandable mechanical rules; recoverable experiments; short emotional dialogue; useful rewards; visible local consequences. Depth and composition take priority over empty terrain acreage. Ceramic ribs, woven cloth, oxidized copper, mineral conduits and living light form one art language.
+The northern expedition crosses water by fitted panels, western stones or swimming, encounters scavengers, and balances the intake’s counterweight. Eda’s ledger reveals that she deliberately cut the remote command line. The regulator supports either a root spillway/updraft or a surface crossing. Returning it to Sella grants a reinforced sailcloth and 30 stamina. This resolves the basin’s local choice while Eda’s journey toward the Census Engine remains planned content.
 
-## Expansion direction — planned
-Preserve Iri and Eda as the Wayfarer/missing-companion roles from the master brief. Expand Eda's agency through independently readable memories and a journal chronology. Add a playable buried-engine prologue, compact sky return, connected Rootsea cave and regional investigations. Oren's brace intelligence, Veyr's enforced equilibrium, a false return, caretaker exploration and a locally controlled network finale are future narrative work, not current quest content.
+No timed deadline or simulated flood is implemented. Forecast language establishes a future threat; it does not conceal an invisible countdown. Both route consequences already have physical gameplay uses. Neither is presented as a consequence-free perfect answer.
 
-Threadbind is the current Weave expression. Rise is implemented on authored stable canopies. Bind, localized motion-reversal Echo, broader Pattern construction and Survey remain planned. The original Impulse Vessel/Bloomwake/Echo Lens concepts will be reconciled with these before implementation; the game does not expose placeholder powers.
+## Working systems and boundaries
 
-Progression should open capability: components, stamina, protection, equipment, settlement services and routes. Expand from the dependable blade and small resource economy only after current combat and construction are reliable.
+Three abilities: Threadbind moves parts into free placements or curated sockets; Rise traverses authored eligible ceilings; Echo returns one free object through up to eight seconds of recorded motion. Echo targets and previews a path, costs stamina, stops before obstructions and settles on cancel. It cannot carry passengers or rewind inventory, rewards or attached assemblies. Bodies and vehicles remain kinematic. Blueprint parts reconstruct from real data and material costs, without arbitrary joint graphs.
 
-## Content targets
-Eight surface regions, four sky archipelagos, five underground biomes, six major dungeons, distinct bosses and regional allies are adjustable production targets. No terrain silhouette counts as playable content. The next milestone is a 20–40 minute connected example of surface, sky and cave rather than broad geographical expansion.
+Travel, blade combat, two enemy roles, camp services, discoveries, map pins, named save slots and options remain playable. Detailed verification and limitations are in BUILD_STATUS.md. The current chapter is shorter than the requested 20–40 minute three-layer milestone.
+
+## Experience pillars
+
+Curiosity → observation → experiment → travel or conflict → useful discovery → another visible possibility. Give systems predictable rules and recoverable experiments. Keep landmarks readable. Reward new routes, tools, knowledge and local change. Use ceramic ribs, oxidized copper, woven cloth and mineral light consistently. Improve geometry, movement and encounter quality before expanding empty geography.
+
+## Planned campaign
+
+WORLD_BIBLE.md defines the replacement long-term story. It expands the local conflict through surface communities, elevated weather stations and the inhabited machinery below. Reachable sky and underground spaces, broader construction, vehicles, equipment combinations, environmental interactions and regional dungeons are future milestones. They are not implemented by writing this plan.

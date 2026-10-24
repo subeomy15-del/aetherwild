@@ -162,7 +162,8 @@ export class World{
   }else if(o.kind==='counterweight'){
    this.mesh('box',0xd6d3b0,g,0,0,0,2.8,2.8,2.8);
    for(const y of [-1,1])this.mesh('box',0x6c9a86,g,0,y,0,2.9,.25,2.9);
-   this.mesh('ring',0x8fe3c4,g,0,1.7,0,.6,.6,.6,.4);
+   this.mesh('ring',o.id==='echo-courier'?0xffcb83:0x8fe3c4,g,0,1.7,0,.6,.6,.6,.4);
+   if(o.id==='echo-courier'){this.mesh('cylinder',0x9b784a,g,0,2.3,0,.08,1.1,.08);for(const x of [-1.42,1.42])this.mesh('box',0xa37a4d,g,x,0,0,.15,2.5,2.95);this.mesh('sphere',0xffce8b,g,0,0,1.44,.4,.6,.12,.6);}
   }else{
    for(let i=0;i<7;i++)this.mesh('cylinder',i%2?0xbaa273:0xa58b5d,g,-2.6+i*.87,0,0,.45,8,.45).rotation.x=Math.PI/2;
    for(const z of [-2.6,2.6])this.mesh('box',0x729b88,g,0,.32,z,6,.3,.35);
@@ -173,6 +174,8 @@ export class World{
   this.root.add(g);this.objectMeshes.set(o.id,g);return g;
  }
  sync(state,heldId){
+  if(this.courierLid){const weight=state.objects.find(o=>o.id==='echo-courier'),open=state.collected.includes('courier-testimony')||weight&&Math.abs(weight.x-25.5)<=1.5&&Math.abs(weight.z-91)<=1.5&&Math.abs(weight.y-11.45)<=.6;this.courierLid.position.y=open?12.2:11.3;this.courierLid.rotation.z=open?-.8:0;this.courierIndicator.scale.y=open?.4:.12;}
+
   const ids=new Set(state.objects.map(o=>o.id));for(const[id,g]of this.objectMeshes)if(!ids.has(id)){this.root.remove(g);this.objectMeshes.delete(id);}
   for(const o of state.objects){let g=this.objectMeshes.get(o.id)||this.createObjectMesh(o);if(o.id!==heldId){g.position.set(o.x,o.y,o.z);g.rotation.y=o.rot;g.visible=true;}}
   for(const[id,g]of this.pickupMeshes)g.visible=!state.collected.includes(id);
@@ -199,6 +202,16 @@ export class World{
   if(this.colliders.some(c=>y>heightAt(c.x,c.z)-.1&&y<(c.top||heightAt(c.x,c.z)+6)&&Math.hypot(x-c.x,z-c.z)<c.r+.15))return true;
   const base=this.gate?.position.y??19;if(y>base&&y<base+7&&Math.abs(x)<4.25&&Math.abs(z+99)<.5)return true;
   return this.riseSurfaces.some(s=>Math.abs(x-s.x)<s.w/2&&Math.abs(z-s.z)<s.d/2&&y>s.bottom-.1&&y<s.top+.15);
+ }
+ buildCourier(){
+  for(const x of [18,33]){this.mesh('cylinder',0xd8d3b6,this.root,x,12.6,88.6,.28,5.2,.28);this.mesh('box',0xb88b52,this.root,x,15.2,90,.45,.4,3.2);this.mesh('ring',0x80b7a0,this.root,x,14.8,91,.7,.7,.7,.25);this.mesh('box',0xe2d8bc,this.root,x,10.05,91,4,.1,4);for(const z of [89,93])this.mesh('box',0x966a43,this.root,x,11,z,.2,2,.2);}
+  this.mesh('box',0x8a6740,this.root,25.5,14.8,91,16,.18,.18);
+  for(const z of [90.8,91.2])this.mesh('box',0x8c9c85,this.root,25.5,10.01,z,15,.06,.09);
+  this.mesh('box',0x967851,this.root,25.5,10.03,91,3.2,.12,3.2);
+  for(const z of [89.3,92.7])this.mesh('box',0xc8ac70,this.root,25.5,10.12,z,3.6,.12,.14);
+  this.mesh('box',0x655743,this.root,25.5,10.1,87,2,.25,1.6);this.mesh('box',0xeadfc3,this.root,25.5,10.7,87,1.5,1,1.2);this.courierIndicator=this.mesh('box',0xffc887,this.root,25.5,11.25,87,.8,.12,.7,.8);this.courierLid=this.mesh('box',0x987844,this.root,25.5,11.3,87,1.8,.15,1.5);
+  this.mesh('cylinder',0xa8d8c4,this.root,15,10.8,91,.5,1.6,.5);this.mesh('ring',0xe0b66f,this.root,15,11.6,91,.7,.7,.2);
+  this.interactables.push({id:'courier-winch',type:'courierReset',x:15,y:10,z:91,r:3,label:'Reset the memory courier'}, {id:'courier-archive',type:'courierCache',x:25.5,y:10,z:87,r:3,label:'Read the sealed courier archive'});
  }
  update(dt,state){this.time+=dt;updateEnvironment(this,dt);this.waterMat.uniforms.time.value=this.time;this.clouds.position.x=Math.sin(this.time*.008)*12;for(const g of this.windmills)g.rotation.z+=dt*.18;this.rotor.rotation.z+=dt*(state.facts.route ? .13 : .018);this.fire.scale.y=1+Math.sin(this.time*9)*.12;if(this.sella.userData.arms?.[1])this.sella.userData.arms[1].rotation.x=Math.sin(this.time*.9)*.05;for(const a of this.anim){if(a.type==='bird'){a.group.position.x+=Math.cos(this.time*.1+a.seed)*dt*1.1;a.group.position.z+=Math.sin(this.time*.1+a.seed)*dt*1.1;a.group.rotation.y=-this.time*.1-a.seed;const w=Math.sin(this.time*3+a.seed)*.2;a.group.children[0].rotation.z=w;a.group.children[1].rotation.z=-w;}}}
 }

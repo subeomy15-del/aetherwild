@@ -1,6 +1,6 @@
 # Aetherwild · The Broken Horizon
 
-Original single-player 3D adventure, version 0.3. The rebuilt Mossglass chapter is playable; the three-layer campaign remains in development. Voxel Vault is separate and unchanged.
+Original single-player 3D adventure, version 0.4. The Last Forecast chapter and Echo courier puzzle are playable; the three-layer campaign remains in development. Voxel Vault is separate and unchanged.
 
 ## Play online
 [Play Aetherwild on GitHub Pages](https://subeomy15-del.github.io/aetherwild/)
@@ -47,3 +47,6 @@ npm run check
 21 tests pass; 16 modules pass syntax/import checks. Chrome journeys covered construction, combat, Rise, puzzle/reward, save/reload, settings and the reconstructed raft. Exact evidence and gaps: [BUILD_STATUS.md](BUILD_STATUS.md). The 20–40 minute sky/surface/underground milestone is not complete.
 
 For isolated testing open http://localhost:3015/?qa=1; this uses tab session storage instead of ordinary saves/settings. All game meshes, writing, interface and synthesized audio are original. Three.js is MIT licensed; see [ASSETS.md](ASSETS.md).
+
+
+Local v0.4: speak with Sella, then examine the courier east of camp (reset winch at 15, 91). Select Echo with 3 or Tab, confirm with E after the weight passes the amber plate, and cancel with Q over the plate. Threadbind is an alternate solution. Read the nearby archive for a saved pattern and testimony. Controls are remappable. This branch has not been published to GitHub Pages.

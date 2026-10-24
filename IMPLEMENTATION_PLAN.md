@@ -1,25 +1,31 @@
 # Implementation plan
 
-## Completed increment — 0.3 foundation
-Rebuilt the rejected blockout's environment/character/camera presentation; integrated Eda's signal story, two working abilities, recoverable construction, combat/lock-on, intake puzzle, choice consequences, useful rewards, named save slots and real quality controls. Browser journey reached the ending and reloaded it; the earned raft reconstructed, sailed and persisted. See BUILD_STATUS.md for the full evidence boundary.
+## Completed local increment — v0.4: Echo and The Last Forecast
 
-This completes a compact foundation increment, not the master brief's 20–40 minute three-layer milestone.
+Baseline: clean main at 9923ca5, 21 passing tests, 16 source modules. Work is isolated on feature/echo-and-basin-story; no external publication in this increment.
 
-## Next — one connected 20–40 minute expedition
-1. Add a playable opening room with Eda: observation, a repair and a flooded gap before the disaster. Short skippable scenes must return control reliably.
-2. Build one small reachable sky route and a controlled descent into the basin. Preserve the existing camp and saves.
-3. Add one cave connected to a readable entrance, light/navigation decisions and a memory clue.
-4. Expand the current quest with an optional local NPC branch and a concluding encounter/discovery. Test order-independent states.
-5. Run a fresh and loaded complete journey, lost-object recovery, ability invalid/cancel cases, raft reconstruction, physical gamepad/focus/menu audit and a sustained performance run.
+Implemented: bounded session motion history, one-object rewind, amber targeting/path/endpoint, cancellation, obstruction and passenger restrictions, stamina, pause behavior, saved settled transforms, three-power wheel and remappable direct action. A courier-weight archive demonstrates rewind and admits Threadbind as an alternate solution. Its one-time materials/pattern/testimony transaction is atomic. Saves migrate v1–v3 to v4. Story, local dialogue, journal and ending are rewritten without invalidating existing route/reward facts.
 
-Acceptance: all three spaces are genuinely playable and connected; at least two approaches where authored; Weave/Threadbind and Rise have successful uses and clear failures; progression/rewards/constructions survive saves; no advertised placeholder options; measured duration and performance recorded. Fix crash/save/progression/controller/camera failures before adding content.
+Acceptance: actual browser journey reaches courier reward, reload retains testimony/pattern, pause freezes the weight, ability cancellation settles it, unit tests cover bounds/rotation/obstruction/transactions/migration, source imports pass. BUILD_STATUS.md records the exact verification boundary.
 
-## Later milestones — planned
-- Reconcile the ability roadmap; implement Bind, Echo, Pattern improvements and Survey individually with bounded rules and tested combinations.
-- Expand Mossglass settlement, economy and one full environmental dungeon/boss.
-- Introduce streaming and persistent travel between all three layers.
-- Develop four order-flexible regional investigations and allies, then additional regions through the proven pipeline.
-- Build the Rootsea caretaker arc, false-return evidence states, prepared/early finale approaches and the local-anchor ending.
-- Broad accessibility, input-device, performance, memory, balance and content polish; accurate playable packaging.
+## Next coherent increment — bounded construction assemblies
 
-Engine migration requires a measured blocker and concrete plan. No migration is currently justified for the next slice. The game remains on its existing Three.js stack.
+1. Preserve the current sockets while introducing explicit part/connector/joint graph data behind a development flag.
+2. Start with rigid two-part assemblies and a four-part maximum. Choose kinematic compound bodies or a browser physics dependency only after an isolated stability test; document collision and licensing.
+3. Implement preview, attach, detach-one-joint, cancel and bounded undo without changing inventory ownership.
+4. Add one crossing or cart puzzle accepting at least two arrangements, with lost-part recall.
+5. Test invalid graphs, unique IDs, atomic costs, save migration, repeated assembly/dismantling, walls, water, menus and recovery in browser before exposing the feature.
+
+Acceptance: working assemblies and saved relationships, no duplication, no unintended movement drivers, recoverable parts, honest UI and a completed playable use case. Fix critical failures before widening part counts.
+
+## Later ordered milestones — planned
+
+- One reliable land vehicle and a water-vehicle puzzle; explicit energy, collision, safe dismount and persistence.
+- Movement/camera audit across diverse geometry, then broader Rise and supported moving-platform/passenger behavior.
+- Small atomic equipment-combination system and tighter combat encounters.
+- A connected reachable sky route, surface loop and underground cave; measure actual play duration toward the 20–40 minute target.
+- Limited material interaction rules, regional quests and a complete dungeon/boss.
+- Expand communities and the replacement campaign only through tested content pipelines.
+- Sustained profiling, controller/accessibility audit, balancing and verified release packaging.
+
+Three.js remains suitable for this compact increment. General physics, streaming and the full campaign are not claimed. Every milestone must leave a runnable game with accurate documents.

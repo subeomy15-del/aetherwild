@@ -8,9 +8,9 @@ import {Player} from '../dist/src/player.js';
 import {World} from '../dist/src/world.js';
 import {DEFAULT_SETTINGS,heightAt} from '../dist/src/data.js';
 class MemoryStorage{constructor(){this.map=new Map();}getItem(k){return this.map.get(k)??null;}setItem(k,v){this.map.set(k,String(v));}removeItem(k){this.map.delete(k);}}
-test('legacy v2 progress migrates to v3 without erasing choices, parts, inventory or discovery',()=>{
+test('legacy v2 progress migrates to v4 without erasing choices, parts, inventory or discovery',()=>{
  const old=freshState();old.version=2;delete old.expedition;delete old.abilities;old.facts.route='roots';old.facts.intakeOpen=true;old.inventory.copper=17;old.discovered.push('bellwether');old.objects[0].socket='crossing-south';
- const migrated=decodeSave(encodeSave(old));assert.equal(migrated.version,3);assert.equal(migrated.inventory.copper,17);assert.equal(migrated.facts.route,'roots');assert.equal(migrated.objects[0].socket,'crossing-south');assert.ok(migrated.discovered.includes('bellwether'));assert.deepEqual(migrated.abilities,['weave','rise']);
+ const migrated=decodeSave(encodeSave(old));assert.equal(migrated.version,4);assert.equal(migrated.inventory.copper,17);assert.equal(migrated.facts.route,'roots');assert.equal(migrated.objects[0].socket,'crossing-south');assert.ok(migrated.discovered.includes('bellwether'));assert.deepEqual(migrated.abilities,['weave','rise','echo']);
 });
 test('named expedition creation preserves legacy data and rejects occupied slots',()=>{
  const storage=new MemoryStorage(),legacy=new SaveStore(storage),first=freshState();first.facts.metSella=true;legacy.write(first);const original=storage.getItem(legacy.key);const slots=new SaveSlots(storage);
@@ -57,4 +57,9 @@ test('the route choice creates a physical road crossing or a bounded usable updr
  const h=heightAt(76,-44);assert.equal(World.prototype.windAt(76,h+4,-44,state).y,7);assert.equal(World.prototype.windAt(76,h+25,-44,state).y,0);assert.equal(World.prototype.windAt(110,h+4,-44,state).y,0);
  const g=playerGame(),p=new Player(g);g.state.facts.route='roots';p.pos.set(76,h+6,-44);p.grounded=false;p.gliding=true;g.world.windAt=World.prototype.windAt;
  for(let i=0;i<60;i++){g.elapsed+=1/60;p.update(1/60);}assert.ok(p.pos.y>h+7);assert.ok(g.state.player.stamina<100);assert.ok(p.pos.toArray().every(Number.isFinite));
+});
+test('airborne state changes cannot refill stamina, and Echo suppresses grounded regeneration during playback',()=>{
+ const g=playerGame(),p=new Player(g);g.state.player.stamina=40;p.pos.set(0,30,109);p.grounded=false;p.vel.y=0;
+ for(let i=0;i<15;i++)p.update(1/60);assert.equal(g.state.player.stamina,40);
+ p.pos.set(0,10,109);p.vel.set(0,0,0);p.grounded=true;g.echo={playback:{id:'weight'}};p.update(1/60);assert.equal(g.state.player.stamina,40);g.echo.playback=null;p.update(1/60);assert.ok(g.state.player.stamina>40);
 });
