@@ -21,11 +21,12 @@ export function buildSky(w){
  const sky=new T.Mesh(new T.SphereGeometry(950,48,24),new T.ShaderMaterial({side:T.BackSide,depthWrite:false,uniforms:{top:{value:new T.Color('#4785ad')},bottom:{value:new T.Color('#d3dfd9')}},vertexShader:'varying vec3 v;void main(){v=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'uniform vec3 top,bottom;varying vec3 v;void main(){vec3 d=normalize(v);float h=smoothstep(-.09,.8,d.y);vec3 c=mix(bottom,top,pow(h,.72));float haze=pow(max(0.,1.-abs(d.y)*3.),7.);c+=vec3(.10,.055,.01)*haze;gl_FragColor=vec4(c,1.);\n#include <tonemapping_fragment>\n#include <colorspace_fragment>}'}));w.skyDome=sky;w.scene.add(sky);
  const sun=new T.Mesh(new T.CircleGeometry(13,48),new T.MeshBasicMaterial({color:0xffefd0,fog:false}));sun.position.set(-360,330,-550);sun.lookAt(0,0,0);w.sunDisc=sun;w.scene.add(sun);
  const rand=rng(18);
+ w.backdropRidgelines=[];
  // Three authored ridgelines: irregular extruded silhouettes, not repeated cones.
  for(let layer=0;layer<3;layer++){
   const count=64,rad=340+layer*120,verts=[],ids=[],color=[0x6f8f98,0x85a0a4,0xa5b9b5][layer];
   for(let i=0;i<=count;i++){const a=i/count*TAU,x=Math.cos(a)*rad,z=Math.sin(a)*rad;const peak=44+layer*12+Math.pow(rand(),2)*95+Math.sin(a*7)*18;verts.push(x,-15,z,x,peak,z);if(i<count){const k=i*2;ids.push(k,k+1,k+2,k+1,k+3,k+2);}}
-  const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(verts,3));geo.setIndex(ids);geo.computeVertexNormals();const m=new T.Mesh(geo,new T.MeshStandardMaterial({color,roughness:1,flatShading:true,side:T.DoubleSide}));w.root.add(m);
+  const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(verts,3));geo.setIndex(ids);geo.computeVertexNormals();const m=new T.Mesh(geo,new T.MeshStandardMaterial({color,roughness:1,flatShading:true,side:T.DoubleSide}));w.root.add(m);w.backdropRidgelines.push(m);
  }
  w.clouds=new T.Group();w.scene.add(w.clouds);
  const cloudMat=new T.MeshBasicMaterial({color:0xf7f4e6,transparent:true,opacity:.64,depthWrite:false});

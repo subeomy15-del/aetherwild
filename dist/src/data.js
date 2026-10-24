@@ -1,11 +1,12 @@
-export const VERSION = '0.5.1';
-export const SAVE_VERSION = 6;
+import {lowerHeightAt,SURFACE_REGIONS} from './surface-data.js';
+export const VERSION = '0.6.0';
+export const SAVE_VERSION = 7;
 export const clamp = (n,a,b) => Math.max(a,Math.min(b,n));
 export const lerp = (a,b,t) => a+(b-a)*t;
 export const smooth = (a,b,v) => {const t=clamp((v-a)/(b-a),0,1);return t*t*(3-2*t);};
 export const distance = (a,b) => Math.hypot(a.x-b.x,a.z-b.z);
 export const riverZ = x => 42+4*Math.sin(x*.025);
-export function heightAt(x,z) {
+export function basinHeightAt(x,z) {
   let h=7+2.2*Math.sin(x*.025)*Math.cos(z*.026)+1.3*Math.sin(x*.065+z*.036);
   for (const [cx,cz,r,y] of [[25.5,91,28,10],[0,102,38,10],[-28,42,30,5.5],[-15,-16,25,9],[0,-103,38,19],[74,-45,24,7],[-98,2,38,26],[110,100,30,18]]) {
     const f=1-smooth(r*.45,r,Math.hypot(x-cx,z-cz));h=lerp(h,y,f);
@@ -18,6 +19,7 @@ export function heightAt(x,z) {
   h+=smooth(145,205,edge)*(18+12*Math.sin(x*.028+z*.023)**2);
   return h;
 }
+export function heightAt(x,z){const edge=Math.max(Math.abs(x),Math.abs(z));if(edge<=205)return basinHeightAt(x,z);const t=smooth(205,400,edge);return lerp(basinHeightAt(x,z),lowerHeightAt(x,z),t);}
 export const WATER=3.2;
 export const START={x:0,y:10,z:109};
 export const ITEMS={
@@ -67,6 +69,7 @@ export const PICKUPS=[
  {id:'intake-cache',kind:'fiber',count:5,x:21,z:-111,chest:true},
 ];
 export const ENEMIES=[
+ ...SURFACE_REGIONS.map((r,i)=>({id:'surface-foe-'+r.id,kind:i%2?'sentinel':'scavenger',x:r.x+48,z:r.z-48,hp:i%2?5:3})),
  {id:'scrapper-1',kind:'scavenger',x:-14,z:-8,hp:3},
  {id:'scrapper-2',kind:'scavenger',x:-26,z:-17,hp:3},
  {id:'sentinel-1',kind:'sentinel',x:0,z:-73,hp:5},

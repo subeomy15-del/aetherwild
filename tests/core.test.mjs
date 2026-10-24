@@ -99,6 +99,6 @@ test('consecutive reconstructions always use unique stable IDs',()=>{
 
 test('out-of-bounds or invalid blueprint placements are rejected before materials are spent',()=>{
  const s=freshState();const bp=makeBlueprint('panel',[s.objects[0]]),before=structuredClone(s);
- assert.equal(reconstruct(s,bp,{x:900,y:10,z:100}).ok,false);assert.deepEqual(s,before);
+ assert.equal(reconstruct(s,bp,{x:9000,y:10,z:100}).ok,false);assert.deepEqual(s,before);
  assert.equal(reconstruct(s,bp,{x:NaN,y:10,z:100}).ok,false);assert.deepEqual(s,before);
 });

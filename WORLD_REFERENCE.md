@@ -1,5 +1,10 @@
 # Current world target — user references, 2026-10-24
 
+## v0.6 reference scope
+
+Surface expansion now uses a 12,000 × 10,000 authored height field and eight named territories. Region placement, mountain/desert/water contrast and road connections follow the supplied broad geography reference; the cropped reference does not provide exact heights or a complete southern coastline. This is not an exact reconstructed Hyrule. The prior enlarged sky remains present and separate. No reference screenshot or extracted Nintendo asset is shipped as game art.
+
+
 The user changed the target from original regional counterparts to Hyrule itself. Preserve the earlier Aetherwild work and saves; do not mislabel the current small prototype as an exact completed recreation.
 
 User-supplied references, kept locally outside dist:

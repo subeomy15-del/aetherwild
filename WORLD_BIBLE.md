@@ -1,5 +1,10 @@
 # World bible — The Last Forecast revision
 
+## v0.6 implemented surface geography
+
+The user's Hyrule reference names label eight survey territories: Central Hyrule, Hebra, Eldin, Akkala, Lanayru, Necluda, Faron and Gerudo. Their authored terrain uses plains, snowy peaks, volcanic rings, amber hills, rivers, southern wooded hills and desert dunes. These are coarse reference-inspired geography, not an exact Nintendo map or complete regional stories. Aetherwild's procedural assets, mechanics and existing characters remain intact. Each territory currently has a small survey shelter rather than a developed town.
+
+
 This replaces the earlier Ninth Relay rescue outline. Retained original story consists of the Mossglass chapter, its optional courier testimony and inspectable notes; the current sky layout uses the user-requested Hyrule reference setting. Everything explicitly marked planned below is future content.
 
 ## World and visual rules

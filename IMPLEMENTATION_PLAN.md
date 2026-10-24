@@ -1,5 +1,17 @@
 # Implementation plan
 
+## Latest milestone — v0.6 surface expansion (implemented locally)
+
+- [x] Preserve the original basin and migrate existing expeditions to schema 7.
+- [x] Expand terrain to 12,000 × 10,000 units, with bounded 81-chunk streaming, roads, water and regional palettes.
+- [x] Add eight survey outposts, discovered-outpost travel, rest and skimmer recovery.
+- [x] Add a kinematic land skimmer and three persistent field puzzles/rewards.
+- [x] Validate logic and browser travel/save/reload.
+- [ ] Next: turn the central-to-Lanayru road into a dense authored adventure with intermediate ruins, alternate crossings and a complete local quest. Playtest its full route before adding more area.
+
+Older milestone notes below are historical; BUILD_STATUS.md describes the current build.
+
+
 ## Completed local increment — v0.4: Echo and The Last Forecast
 
 Baseline: clean main at 9923ca5, 21 passing tests, 16 source modules. Work is isolated on feature/echo-and-basin-story; no external publication in this increment.

@@ -1,5 +1,10 @@
 # Aetherwild: The Broken Horizon — design v0.5.1
 
+## Current playable increment — v0.6 lower lands
+
+The surface now covers 12,000 × 10,000 game units around the retained Mossglass Basin. Eight regional survey outposts give travel destinations, rest, vehicle recovery and one-time supply rewards. The survey loop rewards visiting all eight. Three field activities add a prism filter, an opened volcanic updraft and a three-mirror alignment. This is a broad exploration prototype; regional campaigns and substantial dungeons remain planned.
+
+
 An original action adventure about who gets to decide what a repair is for. Ceramic weather engines outlived their makers. Wilderness and communities now occupy places their records call empty. The player is Iri Vale, an expedition mechanic whose Wayfarer Loom reconnects things the network has stopped understanding.
 
 ## Retained playable chapter: The Last Forecast

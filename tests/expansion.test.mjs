@@ -8,9 +8,9 @@ import {Player} from '../dist/src/player.js';
 import {World} from '../dist/src/world.js';
 import {DEFAULT_SETTINGS,heightAt} from '../dist/src/data.js';
 class MemoryStorage{constructor(){this.map=new Map();}getItem(k){return this.map.get(k)??null;}setItem(k,v){this.map.set(k,String(v));}removeItem(k){this.map.delete(k);}}
-test('legacy v2 progress migrates to v6 without erasing choices, parts, inventory or discovery',()=>{
+test('legacy v2 progress migrates to v7 without erasing choices, parts, inventory or discovery',()=>{
  const old=freshState();old.version=2;delete old.expedition;delete old.abilities;old.facts.route='roots';old.facts.intakeOpen=true;old.inventory.copper=17;old.discovered.push('bellwether');old.objects[0].socket='crossing-south';
- const migrated=decodeSave(encodeSave(old));assert.equal(migrated.version,6);assert.equal(migrated.inventory.copper,17);assert.equal(migrated.facts.route,'roots');assert.equal(migrated.objects[0].socket,'crossing-south');assert.ok(migrated.discovered.includes('bellwether'));assert.deepEqual(migrated.abilities,['weave','rise','echo']);
+ const migrated=decodeSave(encodeSave(old));assert.equal(migrated.version,7);assert.equal(migrated.inventory.copper,17);assert.equal(migrated.facts.route,'roots');assert.equal(migrated.objects[0].socket,'crossing-south');assert.ok(migrated.discovered.includes('bellwether'));assert.deepEqual(migrated.abilities,['weave','rise','echo']);
 });
 test('named expedition creation preserves legacy data and rejects occupied slots',()=>{
  const storage=new MemoryStorage(),legacy=new SaveStore(storage),first=freshState();first.facts.metSella=true;legacy.write(first);const original=storage.getItem(legacy.key);const slots=new SaveSlots(storage);

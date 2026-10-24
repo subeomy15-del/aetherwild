@@ -135,6 +135,7 @@ export class World{
   this.interactables.push({id:'root-updraft',x:76,y:heightAt(76,-44)+1,z:-44,r:3.2,label:'Ride the awakened updraft',type:'rootLift'});
  }
  windAt(x,y,z,state){
+  if(state?.journey?.stage==='hub'&&state?.surface?.solved.includes('eldin-vent')&&Math.hypot(x-2068,z+2532)<20&&y>heightAt(2068,-2532)-1&&y<heightAt(2068,-2532)+65)return {x:0,y:8,z:0};
   if(state?.facts.route==='roots'&&Math.hypot(x-76,z+44)<7&&y<heightAt(76,-44)+20&&y>heightAt(76,-44)-.5)return {x:0,y:7,z:0};
   return {x:0,y:0,z:0};
  }
@@ -187,7 +188,7 @@ export class World{
   if(this.rootWind.visible){const p=this.windMotes.geometry.attributes.position;for(let i=0;i<p.count;i++){const y=(this.time*1.6+i*.31)%19,a=this.time*.8+i*2.39,r=.4+y*.13;p.setXYZ(i,Math.cos(a)*r,y,Math.sin(a)*r);}p.needsUpdate=true;}
  }
  surfaceAt(x,z,feet=999,state=null,exclude=null){
-  let top=heightAt(x,z),platform=null;const wide=this.overworldActive?this.overworldHeightAt?.(x,z):null;if(wide!==null&&wide!==undefined&&wide<=feet+.75&&wide>top){top=wide;platform='sky-overworld';}const sky=this.skyHeightAt?.(x,z);if(sky!==null&&sky!==undefined&&sky<=feet+.75&&sky>top){top=sky;platform='sky-landscape';}
+  let top=this.overworldActive?-100:this.surfaceWideActive?this.surfaceHeightAt?.(x,z)??heightAt(x,z):heightAt(x,z),platform=null;const wide=this.overworldActive?this.overworldHeightAt?.(x,z):null;if(wide!==null&&wide!==undefined&&wide<=feet+.75&&wide>top){top=wide;platform='sky-overworld';}const sky=this.skyHeightAt?.(x,z);if(sky!==null&&sky!==undefined&&sky<=feet+.75&&sky>top){top=sky;platform='sky-landscape';}
   for(const b of this.solids)if(insideTerrace(x,z,b)&&b.top<=feet+.7&&b.top>top){top=b.top;platform=b.id;}
   if(state?.facts.route==='channels'&&Math.abs(x)<3&&z>26.8&&z<56.8&&5.3<=feet+.7&&5.3>top){top=5.3;platform='restored-road';}
   if(state)for(const o of state.objects){if(o.id===exclude)continue;const sz=COMPONENTS[o.kind].size;const dx=x-o.x,dz=z-o.z,c=Math.cos(o.rot),s=Math.sin(o.rot),lx=dx*c-dz*s,lz=dx*s+dz*c;const t=o.y+sz[1]/2;if(Math.abs(lx)<sz[0]/2+.15&&Math.abs(lz)<sz[2]/2+.15&&t<=feet+.75&&t>top){top=t;platform=o.id;}}
@@ -195,12 +196,15 @@ export class World{
  }
  obstacleAt(x,z,y){
   const collider=this.colliders.find(c=>Math.hypot(x-c.x,z-c.z)<c.r+.38&&y>=(c.bottom??-Infinity)&&(!c.top||y<c.top-.3));if(collider)return collider;
+  const surface=this.surfaceWideActive?this.surfaceObstacleAt?.(x,z,y):null;if(surface)return surface;
   const base=this.gate?.position.y??19;
   if(y+1.9>base&&y<base+7&&Math.abs(x)<4.2+.38&&Math.abs(z+99)<.3+.38)return {x:clamp(x,-4.2,4.2),z:-99,r:.4,top:base+7};
   return null;
  }
  cameraObstacleAt(x,y,z){
+  if(this.surfaceWideActive&&this.surfaceObstacleAt?.(x,z,y))return true;
   if(this.colliders.some(c=>y>heightAt(c.x,c.z)-.1&&y<(c.top||heightAt(c.x,c.z)+6)&&Math.hypot(x-c.x,z-c.z)<c.r+.15))return true;
+  const surface=this.surfaceWideActive?this.surfaceObstacleAt?.(x,z,y):null;if(surface)return surface;
   const base=this.gate?.position.y??19;if(y>base&&y<base+7&&Math.abs(x)<4.25&&Math.abs(z+99)<.5)return true;
   if(this.journeyWalls?.some(b=>Math.abs(x-b.x)<b.w/2+.15&&Math.abs(z-b.z)<b.d/2+.15&&y>b.bottom&&y<b.top))return true;
   return this.riseSurfaces.some(s=>Math.abs(x-s.x)<s.w/2&&Math.abs(z-s.z)<s.d/2&&y>s.bottom-.1&&y<s.top+.15);

@@ -1,5 +1,12 @@
 # Content registry — local v0.5.1
 
+## Added locally in v0.6
+
+Implemented: eight survey shelters (stable IDs `surface-post-{region}`), eight regional patrol enemies using existing archetypes, persistent survey skimmer, road corridors, discovered-outpost travel and survey completion stamina reward. Activities: `lanayru-filter` (one prism consumed, two broth reward, visible cleaned tank); `eldin-vent` (materials and usable updraft); `gerudo-light` (three rotating mirrors, materials and stamina reward). The spare filter prism is a stable collectible. Survey shelters supply rest and vehicle recovery. Existing basin/sky content remains.
+
+Not implemented: eight full regional quest chains, major towns, new regional bosses or dungeons. Terrain area is not a content-completion claim.
+
+
 ## Retained implemented surface content
 | ID | Content and purpose |
 |---|---|

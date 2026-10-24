@@ -1,5 +1,10 @@
 # Aetherwild · The Broken Horizon
 
+## Latest local build: v0.6 — expanded lower lands
+
+Run `npm start`, open http://localhost:3015 and choose **Surface expedition** in an empty save slot to try the lower-world expansion immediately. Normal **New expedition** still starts in the enlarged sky. Use WASD, Shift to boost the survey skimmer, E to interact, Space to dismount, M for the surface map and discovered-outpost travel. Outposts can recover the same vehicle if lost. Existing saves migrate automatically; occupied slots are preserved. This local increment has not been deployed to GitHub Pages.
+
+
 Original single-player 3D adventure, local version 0.5.1. The enlarged sky overworld, retained Last Forecast chapter and Echo courier puzzle are playable; the three-layer campaign remains in development. Voxel Vault is separate and unchanged.
 
 ## Play online

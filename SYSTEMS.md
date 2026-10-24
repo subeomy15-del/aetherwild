@@ -1,5 +1,12 @@
 # Systems — v0.5.1 with retained foundations
 
+## v0.6 surface ownership and budgets
+
+`surface-data.js` owns pure terrain/region/road definitions and validated survey state. `SurfaceWorld` owns streamed rendering, local tree colliders, outpost interactions, skimmer presentation and the full surface map. `World.surfaceAt` uses the same sampled grid as rendered nearby terrain. Original basin heights remain intact inside 205 units; a graded transition joins expanded terrain.
+
+Terrain uses 400-unit chunks, at most 9 × 9 active, two builds per frame, near/far grid detail and a coarse distant backdrop. Expired chunk geometries and instance buffers are disposed. Tree collision queries use neighboring tiles. This is kinematic collision and vehicle movement, not rigid-body assembly physics. Surface bounds are ±6,000 X / ±5,000 Z. Save schema 7 adds validated outpost visits, puzzle facts, mirror angles and one skimmer transform; session streaming state is not serialized. Schemas 1–6 migrate without erasing prior facts. Field rewards use atomic transactions and saved idempotence flags. Held-object/Echo bounds now allow surface construction within world limits; existing part caps remain.
+
+
 ## Stack and ownership
 Vendored Three.js r160, native ES modules, dependency-free Node HTTP server and node:test. M4 / 16 GB target: 60 fps High, 30 fps fallback. Representative browser observations are in BUILD_STATUS.md.
 

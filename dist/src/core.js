@@ -1,3 +1,4 @@
+import {surfaceState,validateSurface} from './surface-data.js';
 import {journeyState,validateJourney} from './journey-state.js';
 import {SAVE_VERSION,START,INITIAL_OBJECTS,DEFAULT_SETTINGS,COMPONENTS,COURIER,clamp,questStage} from './data.js';
 export const clone = v => JSON.parse(JSON.stringify(v));
@@ -7,19 +8,20 @@ function nextId(prefix,occupied=[]){
  do{id=prefix+'-'+Date.now().toString(36)+'-'+(idSequence++).toString(36);}while([...ids].some(existing=>existing===id||existing.startsWith(id+'-')));
  return id;
 }
-export function freshState(){return {version:SAVE_VERSION,journey:journeyState(),equipment:{weapon:'mechanic-blade',modifier:null},expedition:{name:'First Expedition'},abilities:['weave','rise','echo'],player:{...START,hp:6,maxHp:6,stamina:100,maxStamina:100},safe:{...START},inventory:{copper:3,fiber:4,broth:3,glass:0,regulator:0},facts:{metSella:false,intakeOpen:false,route:null,rewarded:false},discovered:['reedwake'],collected:[],defeated:[],objects:clone(INITIAL_OBJECTS),blueprints:[],pins:[],playtime:0,saveTime:null};}
+export function freshState(){return {version:SAVE_VERSION,surface:surfaceState(),journey:journeyState(),equipment:{weapon:'mechanic-blade',modifier:null},expedition:{name:'First Expedition'},abilities:['weave','rise','echo'],player:{...START,hp:6,maxHp:6,stamina:100,maxStamina:100},safe:{...START},inventory:{copper:3,fiber:4,broth:3,glass:0,regulator:0},facts:{metSella:false,intakeOpen:false,route:null,rewarded:false},discovered:['reedwake'],collected:[],defeated:[],objects:clone(INITIAL_OBJECTS),blueprints:[],pins:[],playtime:0,saveTime:null};}
 export function transact(inventory,delta){
  if(!inventory||!delta||Object.entries(delta).some(([k,n])=>!Object.hasOwn(inventory,k)||!Number.isSafeInteger(n)||inventory[k]+n<0||inventory[k]+n>999))return false;
  for(const [k,n] of Object.entries(delta))inventory[k]+=n;return true;
 }
 export function applyFact(state,key,value=true){
  if(!Object.hasOwn(state.facts,key))return false;
+ if(key==='rewarded'&&state.facts.rewarded)return true;
  if(key==='route'&&!['roots','channels'].includes(value))return false;
  state.facts[key]=value;
  if(key==='route'){state.facts.intakeOpen=true;state.inventory.regulator=1;}
  if(key==='rewarded'){
    if(!state.facts.route){state.facts.rewarded=false;return false;}
-   state.player.maxStamina=130;state.player.stamina=130;
+   state.player.maxStamina=Math.min(200,state.player.maxStamina+30);state.player.stamina=state.player.maxStamina;
  }
  return true;
 }
@@ -41,7 +43,7 @@ export function reconstruct(state,bp,origin){
  if(!origin||!['x','y','z'].every(k=>Number.isFinite(origin[k])))return {ok:false,message:'Choose a valid place for this build.'};
  const id=nextId('build',state.objects.map(o=>o.id));
  const objects=bp.parts.map((p,i)=>({...p,id:`${id}-${i}`,x:p.x+origin.x,y:p.y+origin.y,z:p.z+origin.z,socket:null,owned:true}));
- if(objects.some(o=>Math.abs(o.x)>=205||Math.abs(o.z)>=205||o.y<=-10||o.y>=200))return {ok:false,message:'This build would leave the surveyed basin. Move farther from the boundary.'};
+ if(objects.some(o=>Math.abs(o.x)>=(state.journey.stage==='hub'?6000:205)||Math.abs(o.z)>=(state.journey.stage==='hub'?5000:205)||o.y<=-10||o.y>=(state.journey.stage==='hub'?1200:200)))return {ok:false,message:'This build would leave the surveyed basin. Move farther from the boundary.'};
  const cost=blueprintCost(bp);
  if(!transact(state.inventory,Object.fromEntries(Object.entries(cost).map(([k,v])=>[k,-v]))))return {ok:false,message:'Missing materials: '+Object.entries(cost).map(([k,v])=>v+' '+k).join(', ')};
  state.objects.push(...objects);return {ok:true,objects};
@@ -56,29 +58,30 @@ export function claimCourierArchive(state){
 }
 export function checksum(text){let h=2166136261;for(let i=0;i<text.length;i++){h^=text.charCodeAt(i);h=Math.imul(h,16777619);}return (h>>>0).toString(16);}
 export function validateState(raw){
- if(!raw||typeof raw!=='object'||Array.isArray(raw)||![1,2,3,4,5,6].includes(raw.version))throw Error('Unrecognized save version.');
+ if(!raw||typeof raw!=='object'||Array.isArray(raw)||![1,2,3,4,5,6,7].includes(raw.version))throw Error('Unrecognized save version.');
  const s=clone(raw);
  if(s.version===1){s.pins??=[];s.blueprints??=[];s.version=2;}
  if(s.version===2){s.expedition??={name:'First Expedition'};s.abilities=['weave','rise'];s.version=3;}
  if(s.version===3){if(!Array.isArray(s.abilities)||!s.abilities.every(a=>['weave','rise'].includes(a)))throw Error('Invalid legacy ability data.');if(!Array.isArray(s.objects))throw Error('Invalid construction data.');s.abilities=[...new Set([...(s.abilities||[]),'echo'])];if(!s.objects.some(o=>o.id===COURIER.id)&&s.objects.length<24)s.objects.push(clone(COURIER));s.version=4;}
  if(s.version===4){s.journey=journeyState();s.equipment={weapon:'mechanic-blade',modifier:null};s.version=5;}
  if(s.version===5){s.journey.scene??='trial';s.version=6;}
- validateJourney(s.journey);if(s.journey.returnPoint&&!['x','y','z'].every(k=>Number.isFinite(s.journey.returnPoint[k])&&Math.abs(s.journey.returnPoint[k])<2600))throw Error('Invalid shrine return point.');if(s.equipment?.weapon!=='mechanic-blade'||![null,'prism'].includes(s.equipment.modifier))throw Error('Invalid equipment combination.');
+ if(s.version===6){s.surface=surfaceState();s.version=7;}
+ validateSurface(s.surface);validateJourney(s.journey);if(s.journey.returnPoint&&!['x','y','z'].every(k=>Number.isFinite(s.journey.returnPoint[k])&&Math.abs(s.journey.returnPoint[k])<2600))throw Error('Invalid shrine return point.');if(s.equipment?.weapon!=='mechanic-blade'||![null,'prism'].includes(s.equipment.modifier))throw Error('Invalid equipment combination.');
  if(typeof s.expedition?.name!=='string'||!s.expedition.name.trim()||s.expedition.name.length>32)throw Error('Invalid expedition name.');
  if(!Array.isArray(s.abilities)||s.abilities.length>3||!s.abilities.every(a=>['weave','rise','echo'].includes(a)))throw Error('Invalid ability data.');
  for(const key of ['x','y','z','hp','maxHp','stamina','maxStamina'])if(!Number.isFinite(s.player?.[key]))throw Error('Invalid player state.');
- const skyWide=s.journey.stage!=='hub'&&s.journey.scene==='overworld',positionLimit=skyWide?2600:210;
- if(Math.abs(s.player.x)>positionLimit||Math.abs(s.player.z)>positionLimit||s.player.y < -20||s.player.y>(skyWide?1000:300))throw Error('Invalid player position.');
- if(!s.safe||!['x','y','z'].every(k=>Number.isFinite(s.safe[k])&&Math.abs(s.safe[k])<(skyWide?2600:210)))throw Error('Invalid safe position.');
+ const skyWide=s.journey.stage!=='hub'&&s.journey.scene==='overworld',surfaceWide=s.journey.stage==='hub',positionLimit=surfaceWide?6100:skyWide?2600:210;
+ if(Math.abs(s.player.x)>positionLimit||Math.abs(s.player.z)>(surfaceWide?5100:positionLimit)||s.player.y < -20||s.player.y>(surfaceWide?1200:skyWide?1000:300))throw Error('Invalid player position.');
+ if(!s.safe||!['x','y','z'].every(k=>Number.isFinite(s.safe[k])&&Math.abs(s.safe[k])<(surfaceWide?6100:skyWide?2600:210)))throw Error('Invalid safe position.');
  s.player.maxHp=clamp(s.player.maxHp,6,30);s.player.hp=clamp(s.player.hp,1,s.player.maxHp);s.player.maxStamina=clamp(s.player.maxStamina,100,200);s.player.stamina=clamp(s.player.stamina,0,s.player.maxStamina);
  const expected=freshState();
  if(!s.inventory||!Object.keys(expected.inventory).every(k=>Number.isSafeInteger(s.inventory[k])&&s.inventory[k]>=0&&s.inventory[k]<=999))throw Error('Invalid inventory.');
  if(!s.facts||!['metSella','intakeOpen','rewarded'].every(k=>typeof s.facts[k]==='boolean')||![null,'roots','channels'].includes(s.facts.route))throw Error('Invalid quest state.');
  if(s.facts.rewarded&&!s.facts.route)throw Error('Impossible quest reward.');
  for(const k of ['discovered','collected','defeated'])if(!Array.isArray(s[k])||s[k].length>512||!s[k].every(v=>typeof v==='string'&&v.length<80))throw Error('Invalid world facts.');
- if(!Array.isArray(s.objects)||s.objects.length>24||new Set(s.objects.map(o=>o.id)).size!==s.objects.length||!s.objects.every(o=>typeof o.id==='string'&&COMPONENTS[o.kind]&&['x','y','z','rot'].every(k=>Number.isFinite(o[k]))&&Math.abs(o.x)<205&&Math.abs(o.z)<205&&o.y>-10&&o.y<200&&(o.socket===null||typeof o.socket==='string')&&(o.driveStopped===undefined||typeof o.driveStopped==='boolean')))throw Error('Invalid construction data.');
+ if(!Array.isArray(s.objects)||s.objects.length>24||new Set(s.objects.map(o=>o.id)).size!==s.objects.length||!s.objects.every(o=>typeof o.id==='string'&&COMPONENTS[o.kind]&&['x','y','z','rot'].every(k=>Number.isFinite(o[k]))&&Math.abs(o.x)<6000&&Math.abs(o.z)<5000&&o.y>-10&&o.y<1200&&(o.socket===null||typeof o.socket==='string')&&(o.driveStopped===undefined||typeof o.driveStopped==='boolean')))throw Error('Invalid construction data.');
  if(!Array.isArray(s.blueprints)||s.blueprints.length>12||!s.blueprints.every(b=>typeof b.id==='string'&&typeof b.name==='string'&&b.name.length<=32&&b.parts?.length>0&&b.parts.length<=12&&b.parts.every(p=>COMPONENTS[p.kind]&&['x','y','z','rot'].every(k=>Number.isFinite(p[k])&&Math.abs(p[k])<400))))throw Error('Invalid blueprint data.');
- if(!Array.isArray(s.pins)||s.pins.length>12||!s.pins.every(p=>Number.isFinite(p.x)&&Number.isFinite(p.z)&&Math.abs(p.x)<205&&Math.abs(p.z)<205&&typeof p.note==='string'&&p.note.length<=50))throw Error('Invalid map pins.');
+ if(!Array.isArray(s.pins)||s.pins.length>12||!s.pins.every(p=>Number.isFinite(p.x)&&Number.isFinite(p.z)&&Math.abs(p.x)<6000&&Math.abs(p.z)<5000&&typeof p.note==='string'&&p.note.length<=50))throw Error('Invalid map pins.');
  s.playtime=Number.isFinite(s.playtime)?clamp(s.playtime,0,1e8):0;
  return s;
 }

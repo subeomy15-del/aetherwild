@@ -1,38 +1,30 @@
-# Build status — local v0.5.1, expanded sky overworld
+# Build status — local v0.6, expanded lower lands
 
-This increment replaces the compressed starting-area scale with an active reference-derived sky overworld. It is a playable prototype, not a completed Great Sky Island/Hyrule recreation or full campaign. No external publication has occurred.
+Playable prototype on branch feature/hyrule-world-target. GitHub Pages remains unchanged; this increment is local only.
 
-## Launch
+## Launch and try
 
-Run `npm start` in `/Users/danielyoo/aetherwild`, then open http://localhost:3015. Node 20+ and WebGL are required; no remote runtime assets are needed. The server is already running.
-
-Start a **New expedition in an empty slot** for the enlarged overworld. Existing saves are preserved. Older sky-trial saves can use Pause → Return to archipelago. Older basin expeditions remain in their saved basin state. GitHub Pages is unchanged.
+Run `npm start` in this repository and open http://localhost:3015. Choose **Surface expedition** and an empty slot for immediate access; normal New expedition retains the sky start. Existing expeditions and unrelated save slots are preserved. E boards the survey skimmer, WASD steers, Shift boosts and Space dismounts. M opens the large surface map. Visit outposts to unlock return travel, rest and recover the vehicle.
 
 ## Implemented
 
-- Reference-derived coastline and water data now produce actual terrain and matching collision. The grid covers **880 × 1,465 game units**: ten times the prior reference grid's width/depth, approximately 100 times its area. This does not mean 100 times the finished content.
-- Authored satellite separations create more than a dozen distinct landmasses. The terrain mesh contains 21 separate rendered patches, including three very small fragments. They are not 21 completed regions or dungeons.
-- Four widely spaced shrine entrances and a northern temple, instanced trees, water surfaces, snow-colored elevated terrain, and an opaque cloud layer concealing the surface.
-- Kinematic wind ferries between awakening, shrine, temple and satellite docks. Actual flight, pause/resume, safe cancellation and stable save snapshots; they are not general aerodynamic vehicle assemblies.
-- Entry into compact ability-trial spaces and return to the exact overworld entrance. Pause-menu return stays available before completing a trial. Existing Threadbind/Rise/Echo mechanics and blade/prism combination are retained.
-- Three optional satellite stops: Windbreak Garden gives food/fiber; Mineral Shelf gives mossglass/copper; Surveyor’s Perch grants one health-capacity improvement and materials. Rewards are atomic and idempotent.
-- Schema 6 supports large sky coordinates and shrine return points while retaining the original basin bounds for legacy expeditions. Schemas 1–5 migrate. New expeditions start in the southern sky area; glider acquisition is still tied to the surface supply quest.
-- The sky dome now follows the player, fixing its visible edge when traveling beyond the old 950-unit sphere. Spawn protection no longer makes the character blink out on load, and dock gangways avoid overlapping floor surfaces.
+- A 12,000 × 10,000 game-unit surface: plains, snowy mountains, volcanic terrain, desert, hills, rivers, lake and coast. Original basin terrain and quests remain intact.
+- Eight small regional survey outposts, road corridors, first-visit materials, a completion stamina reward, rest, discovered-outpost travel and vehicle recovery.
+- Kinematic wheeled survey skimmer with dry-ground restrictions, bounded slopes, collision and persistent position. It is not a physical suspension/assembly simulation.
+- Three field activities: Lanayru prism filter, Eldin vent/updraft and Gerudo mirror alignment. Atomic rewards and persistent state. Eight patrols reuse existing enemy archetypes.
+- Bounded terrain streaming: at most 81 chunks, two builds per frame, near/far detail, instanced trees and coarse distant terrain. Obsolete chunk resources are disposed.
+- Schema 7 migration, large-coordinate saves/builds/map, separate safe Surface expedition creation. Existing enlarged sky and compact ability trials retained.
 
 ## Verification
 
-- `npm test`: **41 passing tests**, covering earlier regressions plus large-coordinate saves, migration, scale/spacing, realm switches, menu-paused ferry motion, cancellation/loading cleanup and satellite reward atomicity.
-- `npm run check`: **24 modules** pass syntax/import checks. `git diff --check` passes.
-- Real Chrome on M4 / 16 GB, isolated QA storage: new large-world spawn; movement beyond the old ±185 bounds; recovery from a changed coast; ferry boarding and destination menu; approximately **982-unit flight** to Joining Shrine; pause/resume; shrine entry; safe return through Pause → Return to archipelago; reload retained the overworld entrance at approximately (-1589,228,220). No console errors in that run.
-- First bridge lift/attachment/crossing was browser-verified in the previous compact draft. In the current expanded-world run the bridge was targeted/lifted; final completion/reward was not reverified after interruptions. Tests exercise shrine seal gating and idempotence, but do not substitute for a complete four-shrine playthrough.
-- Short foreground observations: typically 59–60 fps around landings, with about 78–148 draw calls and 94k–139k triangles; one automated flight/pause sample was around 30 fps. This is not a sustained performance guarantee or total-memory profile.
+`npm test`: 47 passing. `npm run check`: 26 source modules pass syntax/import checks. Tests cover migration, remote positions/builds, occupied-slot protection, streaming disposal/bounds, field-reward atomicity/idempotence, and skimmer boundary/water behavior, plus existing regressions.
 
-## Limits
+Real Chrome on Apple M4 / 16 GB, isolated QA storage: created a surface expedition, boarded and boosted the skimmer beyond the original boundary to approximately (13,30,543), opened the expanded map, traveled to Central outpost, spoke to its keeper, rested, reloaded and continued at the outpost. No console errors observed. Found and fixed a collision seam at the old basin edge. Earlier sky flight/trial verification is retained in git history; the complete four-trial-to-surface route has not been re-played end to end.
 
-The supplied map is a coarse topology reference, not a surveyed height map. Heights, satellite channels, landing adjustments and structures are authored approximations. Coastlines remain blocky; terrain materials, varied architecture, encounters and navigation density need substantial work. Current shrine trial spaces reuse prototype geometry.
+Short foreground samples ranged roughly 30–60 fps with about 547–565 draw calls and 1.16–1.22 million triangles near the original camp. This is not a sustained performance or memory guarantee. Screenshot: artifacts/expanded-surface-v0.6.png.
 
-The full four-shrine → temple → descent → surface/glider route remains unverified end to end. The surface is still the retained compact Mossglass basin, not the supplied Hyrule surface map. Sky/surface global alignment, all regional adventures, Depths, major dungeons/bosses, memories, legendary weapon and finale remain planned. Construction and blueprint bounds remain limited to the original basin/trial spaces.
+## Known limits and next step
 
-Next: complete a fresh and loaded four-shrine journey, fix any blockers and refine routes/coastlines, then implement the central surface hub and regional connections using the supplied surface reference.
+This is much larger traversable terrain, not a finished rich open world. Regional names and broad geography follow the user's reference; terrain is an authored approximation. Outposts are small camps. Three distant field puzzles are automated-tested but not yet browser-played end to end. All roads and slopes have not been manually traversed. There are no complete regional campaigns, major dungeons, new bosses, Depths adventure or finale. Vehicle physics and general construction remain simplified. Most distant areas need denser content and stronger art composition.
 
-Current captured views: artifacts/expanded-sky-v0.5.1.png and artifacts/expanded-sky-map-v0.5.1.png. The local browser was left open and paused.
+Next milestone: author and playtest a complete Central-to-Lanayru route with intermediate ruins, alternative crossings, encounter pacing and a saved local quest; fix traversal problems before increasing world area again.

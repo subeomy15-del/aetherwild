@@ -2,9 +2,9 @@ import * as T from '../vendor/three.module.js';
 import {START,WATER,heightAt,clamp,lerp} from './data.js';
 import {createCharacter,updateCharacter,createSailcloth,updateSailcloth} from './characters.js';
 const v=new T.Vector3();
-function terrainCameraHeight(target,position){
+function terrainCameraHeight(target,position,terrain=heightAt){
  let required=position.y;
- for(let t=.12;t<=1.001;t+=.055){v.lerpVectors(target,position,t);required=Math.max(required,target.y+(heightAt(v.x,v.z)+.72-target.y)/t);}
+ for(let t=.12;t<=1.001;t+=.055){v.lerpVectors(target,position,t);required=Math.max(required,target.y+(terrain(v.x,v.z)+.72-target.y)/t);}
  return required;
 }
 function avoidCameraWalls(target,position,world){
@@ -73,7 +73,7 @@ export class Player{
   const axis=input.axes();let len=Math.hypot(axis.x,axis.y);if(len>1){axis.x/=len;axis.y/=len;len=1;}
   const moveX=axis.x*Math.cos(this.yaw)+axis.y*Math.sin(this.yaw),moveZ=-axis.x*Math.sin(this.yaw)+axis.y*Math.cos(this.yaw);
   if(settings.sprintToggle&&input.hit('sprint'))this.sprintOn=!this.sprintOn;
-  const sprint=(settings.sprintToggle?this.sprintOn:input.down('sprint'))&&len>.1&&s.stamina>1&&!g.loom&&!this.swimming;
+  const sprint=(settings.sprintToggle?this.sprintOn:input.down('sprint'))&&len>.1&&s.stamina>1&&!g.loom&&!this.swimming&&!this.riding;
   const blocking=input.down('block')&&!g.loom&&this.grounded&&this.dodgeTime===0;
   this.blockTime=blocking?this.blockTime+dt:0;
   if(input.hit('jump')&&!this.mantle){
@@ -86,7 +86,7 @@ export class Player{
    }
    else this.jumpBuffer=.16;
   }
-  if(input.hit('dodge')&&!g.loom&&s.stamina>=16&&this.dodgeTime===0){s.stamina-=16;this.dodgeTime=.34;this.invincible=.26;const a=len>.1?Math.atan2(moveX,moveZ):this.facing;this.vel.x=Math.sin(a)*12;this.vel.z=Math.cos(a)*12;g.audio.play('swing');}
+  if(input.hit('dodge')&&!this.riding&&!g.loom&&s.stamina>=16&&this.dodgeTime===0){s.stamina-=16;this.dodgeTime=.34;this.invincible=.26;const a=len>.1?Math.atan2(moveX,moveZ):this.facing;this.vel.x=Math.sin(a)*12;this.vel.z=Math.cos(a)*12;g.audio.play('swing');}
   if(input.hit('attack')&&!g.loom&&!g.rise?.aiming&&!g.echo?.aiming&&!this.swimming&&this.attackCooldown<=0){this.heavy=input.down('sprint')||input.down('heavy');this.attackTime=this.heavy?.65:.36;this.attackCooldown=this.heavy?.85:.43;this.attacked=false;if(this.heavy)s.stamina=Math.max(0,s.stamina-12);g.audio.play('swing');}
   if(this.attackTime>0){this.attackTime-=dt;const threshold=this.heavy?.32:.2;if(this.attackTime<threshold&&!this.attacked){g.combatHit(this.heavy);this.attacked=true;}}
   if(input.hit('heal'))g.heal();
@@ -95,6 +95,7 @@ export class Player{
   this.swimming=ground.height<WATER-.9&&this.pos.y<WATER+.2&&!this.riding&&!this.mantle;
   this.climbing=!!this.mantle;const mantleFrame=!!this.mantle;
   if(mantleFrame)this.advanceMantle(dt);
+  else if(this.riding==='surface-skimmer'){g.surface.drive(dt,{x:moveX,z:moveZ});}
   else if(this.riding){
    const raft=g.state.objects.find(o=>o.id===this.riding);if(!raft)this.riding=null;
    else{const x=clamp(raft.x+moveX*dt*5,-185,185),z=clamp(raft.z+moveZ*dt*5,-185,185);if(heightAt(x,z)<WATER-.25){raft.x=x;raft.z=z;}raft.y=WATER+.42+Math.sin(g.elapsed*1.4)*.045;if(len>.1)raft.rot=lerp(raft.rot,Math.atan2(moveX,moveZ),1-Math.exp(-dt*3));this.pos.set(raft.x,raft.y+.5,raft.z);this.vel.set(0,0,0);this.grounded=true;}
@@ -121,7 +122,7 @@ export class Player{
     if(!this.grounded||step<.62||step<Math.hypot(this.vel.x,this.vel.z)*dt*1.05+.05){this.pos.x=nx;this.pos.z=nz;}
     else {const gx=g.world.surfaceAt(nx,this.pos.z,this.pos.y,g.state,g.held?.id),gz=g.world.surfaceAt(this.pos.x,nz,this.pos.y,g.state,g.held?.id);if(gx.height-this.pos.y<.5)this.pos.x=nx;if(gz.height-this.pos.y<.5)this.pos.z=nz;}
    }
-   const limit=g.world.overworldActive?2590:185;this.pos.x=clamp(this.pos.x,-limit,limit);this.pos.z=clamp(this.pos.z,-limit,limit);
+   const limit=g.world.surfaceWideActive?5990:g.world.overworldActive?2590:185;this.pos.x=clamp(this.pos.x,-limit,limit);this.pos.z=clamp(this.pos.z,g.world.surfaceWideActive?-4990:-limit,g.world.surfaceWideActive?4990:limit);
    if(this.swimming){this.vel.y=lerp(this.vel.y,(WATER-.58-this.pos.y)*6,dt*5);this.pos.y+=this.vel.y*dt;if(len>.1)s.stamina-=dt*6;if(input.down('jump')&&s.stamina>0){this.pos.y+=dt*1.3;this.vel.y=2;}}
    else if(!this.climbing){this.vel.y-=dt*(this.gliding?3:22);if(this.gliding){const wind=g.world.windAt?.(this.pos.x,this.pos.y,this.pos.z,g.state);if(wind){this.vel.x+=wind.x*dt;this.vel.z+=wind.z*dt;this.vel.y+=wind.y*dt;}this.vel.y=Math.max(this.vel.y,-2.25);}this.pos.y+=this.vel.y*dt;}
    const surface=g.world.surfaceAt(this.pos.x,this.pos.z,Math.max(old.y,this.pos.y),g.state,g.held?.id);
@@ -148,7 +149,7 @@ export class Player{
   Object.assign(s,this.snapshot());
  }
  camera(dt,title=false){
-  const g=this.game,cam=g.camera;
+  const g=this.game,cam=g.camera;const terrain=(x,z)=>g.world.overworldActive?-100:heightAt(x,z);
   let target,desired,occluded=false;
   if(title){target=new T.Vector3(-13,18,-56);desired=new T.Vector3(35,30,128);}
   else{
@@ -158,8 +159,8 @@ export class Player{
    const d=Math.max(4.5,this.cameraOrbitDistance);desired=this.pos.clone().add(new T.Vector3(Math.sin(this.yaw)*Math.cos(this.pitch)*d,1.8+Math.sin(this.pitch)*d+(this.riding?1.1:0),Math.cos(this.yaw)*Math.cos(this.pitch)*d)).addScaledVector(right,.48);
    // Raise the orbit above a bank instead of pulling it into Iri's head. A
    // following distance is preserved while the camera clears terrain behind us.
-   const required=terrainCameraHeight(target,desired);
-   desired.y=Math.max(desired.y,Math.min(required,this.pos.y+d*1.8+3),heightAt(desired.x,desired.z)+.72,this.swimming?WATER+.7:-Infinity);
+   const required=terrainCameraHeight(target,desired,terrain);
+   desired.y=Math.max(desired.y,Math.min(required,this.pos.y+d*1.8+3),terrain(desired.x,desired.z)+.72,this.swimming?WATER+.7:-Infinity);
   }
   if(!title&&g.mode!=='rise'){const result=avoidCameraWalls(target,desired,g.world);desired=result.position;occluded=result.blocked;}
   const t=this.camInitialized?1-Math.exp(-dt*(g.settings.reducedMotion?30:14)):1;
@@ -169,7 +170,7 @@ export class Player{
    if(horizontal<minimum){const a=horizontal>.1?Math.atan2(dx,dz):this.yaw;this.cameraPos.x=this.pos.x+Math.sin(a)*minimum;this.cameraPos.z=this.pos.z+Math.cos(a)*minimum;}
    // Collision correction rises immediately; returning to the normal orbit is
    // damped above. This avoids spending several frames inside a steep shore.
-   const clearance=terrainCameraHeight(this.cameraTarget,this.cameraPos);
+   const clearance=terrainCameraHeight(this.cameraTarget,this.cameraPos,terrain);
    this.cameraPos.y=Math.max(this.cameraPos.y,Math.min(clearance,this.pos.y+this.zoom*1.8+3),heightAt(this.cameraPos.x,this.cameraPos.z)+.72);
    if(g.mode!=='rise'){const result=avoidCameraWalls(this.cameraTarget,this.cameraPos,g.world);if(result.blocked)this.cameraPos.copy(result.position);}
   }

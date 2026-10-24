@@ -22,7 +22,7 @@ test('Echo settles on cancellation, blocks seated and attached objects, spends s
  o.socket='test';assert.match(e.reason(o),/Attached/);o.socket=null;g.player.riding=o.id;assert.match(e.reason(o),/Dismount/);g.player.riding=null;g.player.pos.set(o.x,o.y+1.4,o.z);assert.match(e.reason(o),/passengers/);
 });
 test('v3 migration preserves expeditions, choices and components; Echo history is session-only',()=>{
- const old=freshState();old.version=3;old.abilities=['weave','rise'];old.objects=old.objects.filter(o=>o.id!=='echo-courier');old.facts.route='channels';old.facts.rewarded=true;old.inventory.copper=37;const v=validateState(old);assert.equal(v.version,6);assert.equal(v.inventory.copper,37);assert.equal(v.facts.route,'channels');assert.ok(v.objects.some(o=>o.id==='echo-courier'));assert.equal(v.objects[0].id,old.objects[0].id);assert.ok(v.abilities.includes('echo'));assert.deepEqual(decodeSave(encodeSave(v)),v);assert.equal('history' in v,false);
+ const old=freshState();old.version=3;old.abilities=['weave','rise'];old.objects=old.objects.filter(o=>o.id!=='echo-courier');old.facts.route='channels';old.facts.rewarded=true;old.inventory.copper=37;const v=validateState(old);assert.equal(v.version,7);assert.equal(v.inventory.copper,37);assert.equal(v.facts.route,'channels');assert.ok(v.objects.some(o=>o.id==='echo-courier'));assert.equal(v.objects[0].id,old.objects[0].id);assert.ok(v.abilities.includes('echo'));assert.deepEqual(decodeSave(encodeSave(v)),v);assert.equal('history' in v,false);
 });
 
 test('courier rewards commit atomically, survive reload and cannot be claimed twice or from an invalid position',async()=>{

@@ -15,7 +15,7 @@ export class EchoSystem{
  }
  commit(){if(this.playback)return;const o=this.target,g=this.g;if(!o){g.toast('Look toward a marked movable object within 24 paces.');return;}const reason=this.reason(o);if(reason){g.toast(reason);return;}if(g.state.player.stamina<10){g.toast('Echo needs 10 stamina. Rest on solid ground.');return;}g.state.player.stamina-=10;this.playback={id:o.id,motion:new MotionPlayback(this.history.path(o.id))};if(o.id==='echo-courier'||o.id==='sky-courier'){o.driveStopped=true;}if(o.id==='sky-courier'&&g.state.journey)g.state.journey.echoUsed=true;g.audio.play('echo');g.caption('Echo returns one object along its recent path. Rewards and history stay unchanged.');}
  blocked(o,p){const g=this.g,[w,h,d]=COMPONENTS[o.kind].size;
-  if(Math.abs(p.x)>183||Math.abs(p.z)>183||p.y-h/2<heightAt(p.x,p.z)-.2)return true;
+  if(Math.abs(p.x)>(g.world.surfaceWideActive?5990:183)||Math.abs(p.z)>(g.world.surfaceWideActive?4990:183)||p.y-h/2<heightAt(p.x,p.z)-.2)return true;
   for(const [dx,dz]of [[0,0],[w/2,d/2],[-w/2,d/2],[w/2,-d/2],[-w/2,-d/2]])if(g.world.obstacleAt(p.x+dx,p.z+dz,p.y-h/2+.1))return true;
   for(const other of g.state.objects){if(other.id===o.id)continue;const [ow,oh,od]=COMPONENTS[other.kind].size;if(Math.abs(p.x-other.x)<(Math.max(w,d)+Math.max(ow,od))/2-.15&&Math.abs(p.z-other.z)<(Math.max(w,d)+Math.max(ow,od))/2-.15&&Math.abs(p.y-other.y)<(h+oh)/2-.1)return true;}
   const a=g.player.pos;return Math.abs(a.x-p.x)<Math.max(w,d)/2+.5&&Math.abs(a.z-p.z)<Math.max(w,d)/2+.5&&a.y<p.y+h/2+.2&&a.y+2>p.y-h/2;
