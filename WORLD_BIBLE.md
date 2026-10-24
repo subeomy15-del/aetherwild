@@ -1,6 +1,6 @@
 # World bible — The Last Forecast revision
 
-This replaces the earlier Ninth Relay rescue outline. Implemented story consists of the Mossglass chapter, its optional courier testimony and inspectable notes. Everything explicitly marked planned below is future content.
+This replaces the earlier Ninth Relay rescue outline. Retained original story consists of the Mossglass chapter, its optional courier testimony and inspectable notes; the current sky layout uses the user-requested Hyrule reference setting. Everything explicitly marked planned below is future content.
 
 ## World and visual rules
 
@@ -39,3 +39,7 @@ Forecasts do not imply an implemented countdown. Ghostly recordings do not imply
 ## Current setting override
 
 The user subsequently requested Hyrule itself and supplied sky/surface maps. New geographical work follows WORLD_REFERENCE.md. The original named regions and campaign above are retained as historical design work, not the currently approved replacement geography. No complete Hyrule terrain or campaign is implemented by this change of direction.
+
+## Prototype geography status
+
+The supplied sky map now drives the enlarged local overworld; the supplied surface map has not yet been built. Hyrule names identify the requested reference setting, while retained Aetherwild cast and mechanics remain prototype content. No exact franchise story/campaign or global map reconstruction is claimed.

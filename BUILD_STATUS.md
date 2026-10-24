@@ -1,61 +1,38 @@
-# Build status — local v0.4.0
+# Build status — local v0.5.1, expanded sky overworld
 
-Playable increment: **Echo and The Last Forecast**. The compact Mossglass Basin is runnable. The full campaign, reachable sky/underground loop and requested 20–40 minute expedition are not complete.
+This increment replaces the compressed starting-area scale with an active reference-derived sky overworld. It is a playable prototype, not a completed Great Sky Island/Hyrule recreation or full campaign. No external publication has occurred.
 
-## Launch and publication
+## Launch
 
-Run `npm start` in `/Users/danielyoo/aetherwild`, then open http://localhost:3015 in Chrome or Edge. Node 20+ and WebGL are required; the game has no remote runtime dependencies. The existing server is running. Voxel Vault is separate and untouched.
+Run `npm start` in `/Users/danielyoo/aetherwild`, then open http://localhost:3015. Node 20+ and WebGL are required; no remote runtime assets are needed. The server is already running.
 
-Current work: branch `feature/echo-and-basin-story`, based on `9923ca5`. This increment is local and has **not** updated https://subeomy15-del.github.io/aetherwild/ . The main-branch GitHub Pages workflow remains intact. Localhost and GitHub Pages have separate browser-local saves.
+Start a **New expedition in an empty slot** for the enlarged overworld. Existing saves are preserved. Older sky-trial saves can use Pause → Return to archipelago. Older basin expeditions remain in their saved basin state. GitHub Pages is unchanged.
 
-## Implemented in this increment
+## Implemented
 
-- Echo: free-object selection within 24 paces, highlighted target, amber recorded path and endpoint, confirm/cancel, bounded eight-second history, shortest-angle interpolation, stamina cost and swept obstruction stops. Cancellation leaves the object at its last valid pose. Attached parts, seated vehicles and passengers are explicitly unsupported and rejected.
-- Courier puzzle east of camp: reset winch at (15,91), weight crossing an amber plate, supported ceramic/copper rail, grounded terrain terrace and lifting archive lid. Echo cancellation on the plate solves it; Threadbind placement is an alternate solution.
-- Saved, atomic courier reward: testimony, two-panel pattern, 3 copper, 4 fiber and 2 mossglass. Full inventory/pattern capacity does not consume the reward. Repeat collection is prevented.
-- Original replacement chapter: The Last Forecast. Eda challenges a network that treats inhabited places as empty; Iri recovers her evidence and gives the basin a local route. Opening, Sella dialogue, notes, ledger, journal, route consequence descriptions and ending are updated. Future Census Engine story is explicitly planned.
-- Three-ability wheel, remappable Echo shortcut (default 3), current bindings in pause help and canvas accessibility description, original synthesized descending Echo sound/caption.
-- Save schema 4 migrates schemas 1–3 without erasing inventories, choices, rewards, builds or slot identities. Courier settled/driver state persists; histories remain session-only. Full legacy component lists are preserved, with winch recovery available after freeing capacity.
-- Closed airborne stamina regeneration exploit. Echo playback suppresses grounded regeneration. Focus loss during Rise cancels transit to its entry point.
+- Reference-derived coastline and water data now produce actual terrain and matching collision. The grid covers **880 × 1,465 game units**: ten times the prior reference grid's width/depth, approximately 100 times its area. This does not mean 100 times the finished content.
+- Authored satellite separations create more than a dozen distinct landmasses. The terrain mesh contains 21 separate rendered patches, including three very small fragments. They are not 21 completed regions or dungeons.
+- Four widely spaced shrine entrances and a northern temple, instanced trees, water surfaces, snow-colored elevated terrain, and an opaque cloud layer concealing the surface.
+- Kinematic wind ferries between awakening, shrine, temple and satellite docks. Actual flight, pause/resume, safe cancellation and stable save snapshots; they are not general aerodynamic vehicle assemblies.
+- Entry into compact ability-trial spaces and return to the exact overworld entrance. Pause-menu return stays available before completing a trial. Existing Threadbind/Rise/Echo mechanics and blade/prism combination are retained.
+- Three optional satellite stops: Windbreak Garden gives food/fiber; Mineral Shelf gives mossglass/copper; Surveyor’s Perch grants one health-capacity improvement and materials. Rewards are atomic and idempotent.
+- Schema 6 supports large sky coordinates and shrine return points while retaining the original basin bounds for legacy expeditions. Schemas 1–5 migrate. New expeditions start in the southern sky area; glider acquisition is still tied to the surface supply quest.
+- The sky dome now follows the player, fixing its visible edge when traveling beyond the old 950-unit sphere. Spawn protection no longer makes the character blink out on load, and dock gangways avoid overlapping floor surfaces.
 
-## Retained playable foundation
+## Verification
 
-Seven discoverable surface locations; camp/rest/broth, crossing with alternatives, ruins and three enemies across scavenger/sentinel roles, intake counterweight/iris, optional Rise canopy/cache/skiff pattern, hollow/updraft, shore and lookout. Responsive kinematic movement, sprint/jump/glide/swim/assisted climb/mantle, camera obstruction handling, blade light/heavy attacks, guard/timed defense/dodge/lock-on, death/retry.
+- `npm test`: **41 passing tests**, covering earlier regressions plus large-coordinate saves, migration, scale/spacing, realm switches, menu-paused ferry motion, cancellation/loading cleanup and satellite reward atomicity.
+- `npm run check`: **24 modules** pass syntax/import checks. `git diff --check` passes.
+- Real Chrome on M4 / 16 GB, isolated QA storage: new large-world spawn; movement beyond the old ±185 bounds; recovery from a changed coast; ferry boarding and destination menu; approximately **982-unit flight** to Joining Shrine; pause/resume; shrine entry; safe return through Pause → Return to archipelago; reload retained the overworld entrance at approximately (-1589,228,220). No console errors in that run.
+- First bridge lift/attachment/crossing was browser-verified in the previous compact draft. In the current expanded-world run the bridge was targeted/lifted; final completion/reward was not reverified after interruptions. Tests exercise shrine seal gating and idempotence, but do not substitute for a complete four-shrine playthrough.
+- Short foreground observations: typically 59–60 fps around landings, with about 78–148 draw calls and 94k–139k triangles; one automated flight/pause sample was around 30 fps. This is not a sustained performance guarantee or total-memory profile.
 
-Threadbind uses curated sockets and free placements, quarter-turn yaw, cancel/detach/undo and essential-part winches. Blueprint reconstruction spends real materials and produces actual parts. The raft is steerable and rideable, with shallow-bank stops. Three named expedition slots, latest continue, backup/checksum/staging validation, inventory/map/pins/journal/blueprints/settings/credits and real performance settings remain available.
+## Limits
 
-## Verification in this increment
+The supplied map is a coarse topology reference, not a surveyed height map. Heights, satellite channels, landing adjustments and structures are authored approximations. Coastlines remain blocky; terrain materials, varied architecture, encounters and navigation density need substantial work. Current shrine trial spaces reuse prototype geometry.
 
-- `npm test`: **29 passing tests**, including the previous 21 regressions and new bounded-history, shortest-rotation, discontinuity, obstruction/removal, cancellation, migration, atomic/idempotent reward and stamina cases.
-- `npm run check`: **18 source modules** pass syntax/local-import checks; entry assets exist.
-- `git diff --check`: passes.
-- Chrome on Apple M4 / 16 GB, isolated `?qa=echo` session storage: new named expedition, opening skip/control return, all three Sella introduction pages and quest activation; reset courier, target Echo, activate rewind, cancel over plate, open archive and receive reward.
-- Browser reload/Continue retained testimony, materials and the real two-part pattern. Journal and blueprint book displayed them. Passenger proximity rejection displayed a specific explanation.
-- Pause during rewind held courier X at **26.03** across a 1.5-second held-input check. Resume/cancel and wheel switching remained operable.
-- Final Chrome reload and target/path/endpoint capture showed no console errors. Screenshot: `artifacts/echo-courier-v0.4.png`.
-- Echo rebind from 3 to 4 appeared in both settings and the ability wheel; QA bindings were restored to defaults afterward.
-- Short foreground scene samples showed **59–60 fps, about 16.7 ms**, roughly **127–396 draw calls**, **0.98–1.02 million triangles**, five component/history tracks, at DPR 1.5 and High settings in the courier/camp views. These are local observations, not a sustained performance guarantee or total-memory measurement.
+The full four-shrine → temple → descent → surface/glider route remains unverified end to end. The surface is still the retained compact Mossglass basin, not the supplied Hyrule surface map. Sky/surface global alignment, all regional adventures, Depths, major dungeons/bosses, memories, legendary weapon and finale remain planned. Construction and blueprint bounds remain limited to the original basin/trial spaces.
 
-The earlier v0.3 browser pass verified the constructed crossing, swimming, keyboard combat/death/retry, intake/Rise, root-route ending and reload, skiff reconstruction/sailing/persistence, root updraft and graphics/rebinding behavior. That is historical evidence; the full northern quest and both complete endings have not been replayed in this increment after the narrative rewrite. Automated quest/route/camera regressions pass.
+Next: complete a fresh and loaded four-shrine journey, fix any blockers and refine routes/coastlines, then implement the central surface hub and regional connections using the supplied surface reference.
 
-## Known limits and next step
-
-Kinematic heightfield/authored collision remains in use; there is no general rigid-body/joint solver. Echo uses conservative box checks, rejects passenger rewind, and drops construction teleports from history. Stationary objects eventually have no motion to return; reset the courier to create a new path. Pausing freezes history; saving settles/cancels the active operation.
-
-No reachable sky region, underground cave, streaming, land vehicle, equipment combinations, bow, boss, major dungeon, regional companions, material propagation or complete campaign. The courier archive is a short added encounter, not a 20–40 minute slice by itself. No quantitative match to another game is claimed.
-
-Physical gamepad/disconnects, prolonged memory growth, every collision shape, both full ending journeys and the new Rise focus case need broader hands-on verification. Sound cues are implemented but native browser automation has not established subjective audio quality. User saves are origin-local; clearing storage removes them.
-
-Next concrete milestone: bounded rigid construction assemblies, one recoverable multi-solution puzzle and saved attachment graphs, validated before adding powered vehicles. See IMPLEMENTATION_PLAN.md.
-
-## In-progress v0.5 draft after new user direction
-
-Branch: feature/hyrule-world-target. The v0.4 increment above remains the last completed, committed milestone; v0.5 is work in progress, not published.
-
-New expeditions now begin in the elevated tutorial. Added separate shrine sites, a prism/blade combination with real damage changes, temple/descent gating, a scripted steering descent and a glider supply quest. Surface rendering is hidden beneath an opaque animated cloud layer during the sky start. Older saves migrate to schema 5 in the basin with their glider retained. Forest, snow and higher rewind islands are under layout revision.
-
-Current checks: 34 tests passed after the shrine split, including legacy migration, equipment transactions, actual terrain gaps, shrine prerequisites/reward idempotence, descent pause state, glider gating, cloud visibility and recovery. Source checks pass for 23 modules including the standalone map-reference data file.
-
-Browser evidence: sky spawn/control, cloud-hidden surface, actual first panel lifting/attachment and crossing were exercised. The complete four-shrine-to-hub route has NOT been browser-verified after the latest structural changes. Shrine maps/prompts and route/collision consistency still need revision. The surface reference remains unimplemented; regional expansion is still required. See WORLD_REFERENCE.md for the user's new map target. Do not describe this draft as the full Great Sky Island, a complete opening milestone or an exact Hyrule recreation.
-
-Final startup check: a fresh isolated Chrome expedition loaded the current separated-shrine draft, player movement worked, clouds concealed the surface and no console errors were reported. Capture: artifacts/sky-layout-draft-v0.5.png. The traced reference coastline is still not the active terrain. The final full four-shrine browser route remains unverified.
+Current captured views: artifacts/expanded-sky-v0.5.1.png and artifacts/expanded-sky-map-v0.5.1.png. The local browser was left open and paused.

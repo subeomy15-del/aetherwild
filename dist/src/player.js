@@ -14,7 +14,7 @@ function avoidCameraWalls(target,position,world){
 }
 export class Player{
  constructor(game){
-  this.game=game;this.pos=new T.Vector3(START.x,START.y,START.z);this.vel=new T.Vector3();this.grounded=true;this.yaw=0;this.pitch=.12;this.zoom=6.4;this.facing=Math.PI;this.coyote=.12;this.jumpBuffer=0;this.gliding=false;this.swimming=false;this.climbing=false;this.mantle=null;this.dodgeTime=0;this.invincible=0;this.attackTime=0;this.attackCooldown=0;this.blockTime=0;this.attacked=false;this.heavy=false;this.walkTime=0;this.sprintOn=false;this.locked=null;this.riding=null;this.lastSafe=0;this.landImpact=0;this.wasGrounded=true;
+  this.game=game;this.pos=new T.Vector3(START.x,START.y,START.z);this.vel=new T.Vector3();this.grounded=true;this.yaw=0;this.pitch=.12;this.zoom=6.4;this.facing=Math.PI;this.coyote=.12;this.jumpBuffer=0;this.gliding=false;this.swimming=false;this.climbing=false;this.mantle=null;this.dodgeTime=0;this.invincible=0;this.damageFlash=0;this.attackTime=0;this.attackCooldown=0;this.blockTime=0;this.attacked=false;this.heavy=false;this.walkTime=0;this.sprintOn=false;this.locked=null;this.riding=null;this.lastSafe=0;this.landImpact=0;this.wasGrounded=true;
   this.mesh=createCharacter(0x2f6268,0xbd824a);game.scene.add(this.mesh);
   this.pack=this.mesh.userData.pack;
   this.blade=this.mesh.userData.blade;
@@ -22,7 +22,7 @@ export class Player{
   this.shadow=new T.Mesh(new T.CircleGeometry(.63,24),new T.MeshBasicMaterial({color:0x253c36,transparent:true,opacity:.23,depthWrite:false}));this.shadow.rotation.x=-Math.PI/2;game.scene.add(this.shadow);
   this.cameraPos=new T.Vector3();this.cameraTarget=new T.Vector3();this.camInitialized=false;
  }
- load(state){this.pos.set(state.player.x,state.player.y,state.player.z);this.vel.set(0,0,0);this.yaw=0;this.pitch=.12;this.zoom=6.4;this.camInitialized=false;this.invincible=1;this.gliding=false;this.swimming=false;this.riding=null;this.mantle=null;this.attackTime=0;this.attackCooldown=0;this.dodgeTime=0;this.jumpBuffer=0;this.coyote=.13;this.grounded=true;this.landImpact=0;this.wasGrounded=true;this.mesh.position.copy(this.pos);}
+ load(state){this.pos.set(state.player.x,state.player.y,state.player.z);this.vel.set(0,0,0);this.yaw=0;this.pitch=.12;this.zoom=6.4;this.camInitialized=false;this.invincible=1;this.damageFlash=0;this.gliding=false;this.swimming=false;this.riding=null;this.mantle=null;this.attackTime=0;this.attackCooldown=0;this.dodgeTime=0;this.jumpBuffer=0;this.coyote=.13;this.grounded=true;this.landImpact=0;this.wasGrounded=true;this.mesh.position.copy(this.pos);}
  snapshot(){return {x:this.pos.x,y:this.pos.y,z:this.pos.z};}
  tryMantle(moveX,moveZ){
   const g=this.game,s=g.state.player;if(this.mantle||s.stamina<10||this.riding||this.gliding)return false;
@@ -58,8 +58,9 @@ export class Player{
   if(t>=1){this.pos.copy(m.target);this.mantle=null;this.grounded=true;this.climbing=false;this.landImpact=0;}
  }
  update(dt){
+  const WATER=this.game.world.waterAt?.(this.pos.x,this.pos.z)??3.2;
   const g=this.game,input=g.input,s=g.state.player,settings=g.settings;
-  this.invincible=Math.max(0,this.invincible-dt);this.attackCooldown=Math.max(0,this.attackCooldown-dt);this.dodgeTime=Math.max(0,this.dodgeTime-dt);this.jumpBuffer=Math.max(0,this.jumpBuffer-dt);this.coyote=this.grounded?.13:Math.max(0,this.coyote-dt);
+  this.invincible=Math.max(0,this.invincible-dt);this.damageFlash=Math.max(0,this.damageFlash-dt);this.attackCooldown=Math.max(0,this.attackCooldown-dt);this.dodgeTime=Math.max(0,this.dodgeTime-dt);this.jumpBuffer=Math.max(0,this.jumpBuffer-dt);this.coyote=this.grounded?.13:Math.max(0,this.coyote-dt);
   const mx=input.mouse.x*.0022*settings.sensitivity+input.look.x*dt*2.4*settings.gamepadSensitivity;
   const my=input.mouse.y*.0018*settings.sensitivity+input.look.y*dt*1.8*settings.gamepadSensitivity;
   this.yaw-=mx;this.pitch=clamp(this.pitch+my*(settings.invertY?-1:1),-.38,1.12);
@@ -120,7 +121,7 @@ export class Player{
     if(!this.grounded||step<.62||step<Math.hypot(this.vel.x,this.vel.z)*dt*1.05+.05){this.pos.x=nx;this.pos.z=nz;}
     else {const gx=g.world.surfaceAt(nx,this.pos.z,this.pos.y,g.state,g.held?.id),gz=g.world.surfaceAt(this.pos.x,nz,this.pos.y,g.state,g.held?.id);if(gx.height-this.pos.y<.5)this.pos.x=nx;if(gz.height-this.pos.y<.5)this.pos.z=nz;}
    }
-   this.pos.x=clamp(this.pos.x,-185,185);this.pos.z=clamp(this.pos.z,-185,185);
+   const limit=g.world.overworldActive?2590:185;this.pos.x=clamp(this.pos.x,-limit,limit);this.pos.z=clamp(this.pos.z,-limit,limit);
    if(this.swimming){this.vel.y=lerp(this.vel.y,(WATER-.58-this.pos.y)*6,dt*5);this.pos.y+=this.vel.y*dt;if(len>.1)s.stamina-=dt*6;if(input.down('jump')&&s.stamina>0){this.pos.y+=dt*1.3;this.vel.y=2;}}
    else if(!this.climbing){this.vel.y-=dt*(this.gliding?3:22);if(this.gliding){const wind=g.world.windAt?.(this.pos.x,this.pos.y,this.pos.z,g.state);if(wind){this.vel.x+=wind.x*dt;this.vel.z+=wind.z*dt;this.vel.y+=wind.y*dt;}this.vel.y=Math.max(this.vel.y,-2.25);}this.pos.y+=this.vel.y*dt;}
    const surface=g.world.surfaceAt(this.pos.x,this.pos.z,Math.max(old.y,this.pos.y),g.state,g.held?.id);

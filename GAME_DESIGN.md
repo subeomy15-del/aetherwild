@@ -1,8 +1,8 @@
-# Aetherwild: The Broken Horizon — design v0.4
+# Aetherwild: The Broken Horizon — design v0.5.1
 
 An original action adventure about who gets to decide what a repair is for. Ceramic weather engines outlived their makers. Wilderness and communities now occupy places their records call empty. The player is Iri Vale, an expedition mechanic whose Wayfarer Loom reconnects things the network has stopped understanding.
 
-## Playable chapter: The Last Forecast
+## Retained playable chapter: The Last Forecast
 
 Bellwether has scheduled the Listening Hollow as the receiving basin for its next balancing cycle. Sella shelters people excluded from its census. Eda Rook entered the intake to challenge the decision; her mechanical courier returned alone. Iri can recover Eda’s unfiled objection by returning a moving weight onto an archive plate. Echo or Threadbind solves it; the testimony and useful construction pattern persist.
 
@@ -27,3 +27,7 @@ WORLD_BIBLE.md defines the replacement long-term story. It expands the local con
 ## Current user override
 
 The latest target is a sky-first Hyrule layout with multiple islands and shrines, followed by surface regional expansion. The original region-counterpart direction above is superseded for new world development. Existing basin content remains for compatibility. WORLD_REFERENCE.md records the supplied maps and the implemented/planned boundary.
+
+## Current playable scale
+
+The local v0.5.1 overworld uses the supplied sky map at ten times its previous horizontal grid scale. Major shrine entrances are hundreds of units apart. Compact trial spaces preserve readable ability teaching; wind ferries make separated islands reachable before the surface glider mission. Three satellite discoveries provide resources or health capacity. Larger area is not evidence of a finished, richly populated campaign.

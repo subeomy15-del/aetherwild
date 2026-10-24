@@ -1,6 +1,6 @@
-# Content registry — 0.4
+# Content registry — local v0.5.1
 
-## Implemented surface content
+## Retained implemented surface content
 | ID | Content and purpose |
 |---|---|
 | reedwake / sella | Camp, field researcher, rest/food, save beacon, guide and quest reward |
@@ -46,3 +46,7 @@ Reset recalls the stable courier ID, stops active operations and restarts its pa
 ## In-progress v0.5 content
 
 Draft sky island sites: Joining Shrine, Equipment Shrine, Ascent Shrine and Rewind Shrine; northern temple exit; forest crossing; snowy approach; two-ceiling access to the high rewind island; cloth retrieval and glider fitting. Trial flags and shrine collection IDs gate descent and one-time rewards. These are prototype sites, not surveyed replicas of the supplied map. The complete new route and revised island navigation remain unverified in browser. Hyrule surface regions and Depths are planned, not implemented.
+
+## v0.5.1 expanded overworld
+
+Active reference-derived sky terrain; four shrine entrance IDs overworld-weave/bind/rise/echo; northern temple; awakening landing; wind-ferry docks. Satellite IDs: windbreak-garden (fiber/broth), mineral-shelf (glass/copper), survey-perch (fiber/copper and one health-capacity upgrade). Each cache persists a satellite-prefixed collected fact and refuses duplicate/overflowing transactions. These are compact discoveries, not completed regional arcs. The complete four-shrine route still requires browser verification.

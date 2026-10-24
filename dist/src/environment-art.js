@@ -18,8 +18,8 @@ export function addArtGeometry(w){
 function between(w,kind,color,a,b,r){const d=new T.Vector3().subVectors(b,a),p=new T.Vector3().addVectors(a,b).multiplyScalar(.5),q=new T.Quaternion().setFromUnitVectors(UP,d.clone().normalize()),e=new T.Euler().setFromQuaternion(q);w.add(kind,color,p.x,p.y,p.z,r,d.length(),r,e.x,e.y,e.z);}
 
 export function buildSky(w){
- const sky=new T.Mesh(new T.SphereGeometry(950,48,24),new T.ShaderMaterial({side:T.BackSide,depthWrite:false,uniforms:{top:{value:new T.Color('#4785ad')},bottom:{value:new T.Color('#d3dfd9')}},vertexShader:'varying vec3 v;void main(){v=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'uniform vec3 top,bottom;varying vec3 v;void main(){vec3 d=normalize(v);float h=smoothstep(-.09,.8,d.y);vec3 c=mix(bottom,top,pow(h,.72));float haze=pow(max(0.,1.-abs(d.y)*3.),7.);c+=vec3(.10,.055,.01)*haze;gl_FragColor=vec4(c,1.);\n#include <tonemapping_fragment>\n#include <colorspace_fragment>}'}));w.scene.add(sky);
- const sun=new T.Mesh(new T.CircleGeometry(13,48),new T.MeshBasicMaterial({color:0xffefd0,fog:false}));sun.position.set(-360,330,-550);sun.lookAt(0,0,0);w.scene.add(sun);
+ const sky=new T.Mesh(new T.SphereGeometry(950,48,24),new T.ShaderMaterial({side:T.BackSide,depthWrite:false,uniforms:{top:{value:new T.Color('#4785ad')},bottom:{value:new T.Color('#d3dfd9')}},vertexShader:'varying vec3 v;void main(){v=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'uniform vec3 top,bottom;varying vec3 v;void main(){vec3 d=normalize(v);float h=smoothstep(-.09,.8,d.y);vec3 c=mix(bottom,top,pow(h,.72));float haze=pow(max(0.,1.-abs(d.y)*3.),7.);c+=vec3(.10,.055,.01)*haze;gl_FragColor=vec4(c,1.);\n#include <tonemapping_fragment>\n#include <colorspace_fragment>}'}));w.skyDome=sky;w.scene.add(sky);
+ const sun=new T.Mesh(new T.CircleGeometry(13,48),new T.MeshBasicMaterial({color:0xffefd0,fog:false}));sun.position.set(-360,330,-550);sun.lookAt(0,0,0);w.sunDisc=sun;w.scene.add(sun);
  const rand=rng(18);
  // Three authored ridgelines: irregular extruded silhouettes, not repeated cones.
  for(let layer=0;layer<3;layer++){

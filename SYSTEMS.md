@@ -1,4 +1,4 @@
-# Systems — 0.4
+# Systems — v0.5.1 with retained foundations
 
 ## Stack and ownership
 Vendored Three.js r160, native ES modules, dependency-free Node HTTP server and node:test. M4 / 16 GB target: 60 fps High, 30 fps fallback. Representative browser observations are in BUILD_STATUS.md.
@@ -18,7 +18,7 @@ Rise accepts an authored stable canopy, at most 3 paces thick and 16 above the p
 Blueprints serialize part kinds and relative position/yaw. Reconstruction validates IDs, limits, bounds and costs before spending. Ground/raft buoyancy normalization ensures stable placement. They reconstruct actual working components; general joints, powered settings and broad assembly physics remain future work.
 
 ## Persistence
-Save schema v4 migrates v1/v2/v3, retaining inventories, quest facts, discoveries and builds while retaining expedition metadata and adding Echo/the courier when capacity permits. localStorage stores checked payloads with checksum, staging readback, atomic main-key replacement and prior backup. Slot 1 retains aetherwild.save.v2 for backward compatibility; other slots have independent keys. Occupied or corrupt slots cannot be silently replaced. Loading another expedition requires confirmation and saves the current one first.
+The retained save format began at schema v4, migrating v1/v2/v3; current schema 6 extends it, retaining inventories, quest facts, discoveries and builds while retaining expedition metadata and adding Echo/the courier when capacity permits. localStorage stores checked payloads with checksum, staging readback, atomic main-key replacement and prior backup. Slot 1 retains aetherwild.save.v2 for backward compatibility; other slots have independent keys. Occupied or corrupt slots cannot be silently replaced. Loading another expedition requires confirmation and saves the current one first.
 
 Position, safe respawn, health/stamina, inventory, facts, discoveries, collection/defeats, objects, patterns and pins persist. Unsafe air/water/combat saves use safe ground. Riding state is transient; the raft and its position persist, allowing reboarding. Settings are separately validated. Normal origins have independent browser storage; ?qa=1 isolates QA in tab sessionStorage.
 
@@ -46,4 +46,10 @@ The courier archive uses claimCourierArchive for one atomic materials/blueprint/
 
 ## In-progress sky journey architecture
 
-journey-state.js holds schema-5 chapter/equipment facts and atomic single-material binding. sky-journey.js coordinates authored shrine sites, recovery, presentation visibility, descent and the glider quest. sky-art.js and sky-landscape.js own prototype land geometry and matching surface queries. sky-map-data.js is unused reference classification data, not terrain or progression implementation. Sky solids/parts use stable IDs; render groups can change parents, and removal detaches from their current parent. ?qa sessions omit pointer capture for keyboard/arrow-camera automation; normal play retains pointer capture. Full-route runtime verification is outstanding.
+journey-state.js holds schema-5 chapter/equipment facts and atomic single-material binding. sky-journey.js coordinates authored shrine sites, recovery, presentation visibility, descent and the glider quest. sky-art.js and sky-landscape.js own prototype land geometry and matching surface queries. sky-map-data.js supplies the active reference-derived overworld topology. Sky solids/parts use stable IDs; render groups can change parents, and removal detaches from their current parent. ?qa sessions omit pointer capture for keyboard/arrow-camera automation; normal play retains pointer capture. Full-route runtime verification is outstanding.
+
+## Expanded sky overworld — schema 6
+
+sky-overworld.js owns reference-derived terrain, an identical collision interpolation, adjusted map rows, instanced vegetation, water, shrine/dock definitions and stable satellite IDs. A separate presentation group prevents legacy trial geometry from being scaled with the overworld. Journey scene values distinguish overworld, legacy trial, and individual ability trials. Entry/return switches collision space immediately. Player coordinates may reach ±2,600 only in the sky overworld; legacy basin/trial validation remains narrow. Component/blueprint limits are unchanged.
+
+Wind-ferry motion has one authoritative journey writer, a bounded high-arc route and runtime-only progress. Menus freeze it; cancellation returns to the departure dock; loading clears runtime motion. Saves during flight use the stable departure position. Map rows match the authored satellite channel adjustments. Sky water uses a local water-height query; original basin water keeps its existing level.

@@ -33,3 +33,7 @@ Three.js remains suitable for this compact increment. General physics, streaming
 ## Superseding direction — v0.5 in progress
 
 The user now wants Hyrule geography and supplied both sky and surface references. Complete the multi-island shrine opening with the surface concealed beneath clouds; verify the entire new-game → four shrine seals → temple → descent → glider journey. Replace the prototype coastlines using the supplied reference only after collision and route tests pass. Then build the central surface hub and order-flexible regional routes in the requested geography. Regional expansion remains in scope; do not replace it with an unrelated construction-only roadmap. Keep unsupported routes explicitly planned.
+
+## v0.5.1 scale increment
+
+Active reference-derived sky geometry, large-coordinate persistence, separated satellite landmasses, distant shrine entrances, wind ferries and three useful satellite discoveries are implemented. Browser verification covered one long flight, shrine entry/return and reload. Complete all four trials, their saved seals, temple descent and glider acquisition in a fresh/loaded real-browser journey before marking the opening milestone complete. Then implement the central surface hub and connections to the requested regions. Keep the current terrain approximations explicit.

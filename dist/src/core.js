@@ -56,18 +56,20 @@ export function claimCourierArchive(state){
 }
 export function checksum(text){let h=2166136261;for(let i=0;i<text.length;i++){h^=text.charCodeAt(i);h=Math.imul(h,16777619);}return (h>>>0).toString(16);}
 export function validateState(raw){
- if(!raw||typeof raw!=='object'||Array.isArray(raw)||![1,2,3,4,5].includes(raw.version))throw Error('Unrecognized save version.');
+ if(!raw||typeof raw!=='object'||Array.isArray(raw)||![1,2,3,4,5,6].includes(raw.version))throw Error('Unrecognized save version.');
  const s=clone(raw);
  if(s.version===1){s.pins??=[];s.blueprints??=[];s.version=2;}
  if(s.version===2){s.expedition??={name:'First Expedition'};s.abilities=['weave','rise'];s.version=3;}
  if(s.version===3){if(!Array.isArray(s.abilities)||!s.abilities.every(a=>['weave','rise'].includes(a)))throw Error('Invalid legacy ability data.');if(!Array.isArray(s.objects))throw Error('Invalid construction data.');s.abilities=[...new Set([...(s.abilities||[]),'echo'])];if(!s.objects.some(o=>o.id===COURIER.id)&&s.objects.length<24)s.objects.push(clone(COURIER));s.version=4;}
  if(s.version===4){s.journey=journeyState();s.equipment={weapon:'mechanic-blade',modifier:null};s.version=5;}
- validateJourney(s.journey);if(s.equipment?.weapon!=='mechanic-blade'||![null,'prism'].includes(s.equipment.modifier))throw Error('Invalid equipment combination.');
+ if(s.version===5){s.journey.scene??='trial';s.version=6;}
+ validateJourney(s.journey);if(s.journey.returnPoint&&!['x','y','z'].every(k=>Number.isFinite(s.journey.returnPoint[k])&&Math.abs(s.journey.returnPoint[k])<2600))throw Error('Invalid shrine return point.');if(s.equipment?.weapon!=='mechanic-blade'||![null,'prism'].includes(s.equipment.modifier))throw Error('Invalid equipment combination.');
  if(typeof s.expedition?.name!=='string'||!s.expedition.name.trim()||s.expedition.name.length>32)throw Error('Invalid expedition name.');
  if(!Array.isArray(s.abilities)||s.abilities.length>3||!s.abilities.every(a=>['weave','rise','echo'].includes(a)))throw Error('Invalid ability data.');
  for(const key of ['x','y','z','hp','maxHp','stamina','maxStamina'])if(!Number.isFinite(s.player?.[key]))throw Error('Invalid player state.');
- if(Math.abs(s.player.x)>210||Math.abs(s.player.z)>210||s.player.y < -20||s.player.y>300)throw Error('Invalid player position.');
- if(!s.safe||!['x','y','z'].every(k=>Number.isFinite(s.safe[k])&&Math.abs(s.safe[k])<210))throw Error('Invalid safe position.');
+ const skyWide=s.journey.stage!=='hub'&&s.journey.scene==='overworld',positionLimit=skyWide?2600:210;
+ if(Math.abs(s.player.x)>positionLimit||Math.abs(s.player.z)>positionLimit||s.player.y < -20||s.player.y>(skyWide?1000:300))throw Error('Invalid player position.');
+ if(!s.safe||!['x','y','z'].every(k=>Number.isFinite(s.safe[k])&&Math.abs(s.safe[k])<(skyWide?2600:210)))throw Error('Invalid safe position.');
  s.player.maxHp=clamp(s.player.maxHp,6,30);s.player.hp=clamp(s.player.hp,1,s.player.maxHp);s.player.maxStamina=clamp(s.player.maxStamina,100,200);s.player.stamina=clamp(s.player.stamina,0,s.player.maxStamina);
  const expected=freshState();
  if(!s.inventory||!Object.keys(expected.inventory).every(k=>Number.isSafeInteger(s.inventory[k])&&s.inventory[k]>=0&&s.inventory[k]<=999))throw Error('Invalid inventory.');

@@ -1,6 +1,6 @@
 # Aetherwild · The Broken Horizon
 
-Original single-player 3D adventure, version 0.4. The Last Forecast chapter and Echo courier puzzle are playable; the three-layer campaign remains in development. Voxel Vault is separate and unchanged.
+Original single-player 3D adventure, local version 0.5.1. The enlarged sky overworld, retained Last Forecast chapter and Echo courier puzzle are playable; the three-layer campaign remains in development. Voxel Vault is separate and unchanged.
 
 ## Play online
 [Play Aetherwild on GitHub Pages](https://subeomy15-del.github.io/aetherwild/)
@@ -53,3 +53,5 @@ Local v0.4: speak with Sella, then examine the courier east of camp (reset winch
 
 
 In-progress v0.5 on feature/hyrule-world-target: new expeditions start above a cloud-hidden surface with separate ability shrine sites. This draft is not published and its complete shrine-to-hub route is not yet browser-verified. WORLD_REFERENCE.md records the subsequently supplied Hyrule maps; the traced coastline is not yet active terrain. Existing basin expeditions remain loadable.
+
+Local v0.5.1 now has an active, enlarged reference-derived sky overworld. Start a new expedition in an empty slot; use wind-ferry docks to visit the separated shrine entrances and optional satellite stops. Inside a shrine, Pause → Return to archipelago exits safely. The full campaign and supplied surface map remain unfinished; see BUILD_STATUS.md for actual verification.

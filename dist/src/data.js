@@ -1,5 +1,5 @@
-export const VERSION = '0.5.0';
-export const SAVE_VERSION = 5;
+export const VERSION = '0.5.1';
+export const SAVE_VERSION = 6;
 export const clamp = (n,a,b) => Math.max(a,Math.min(b,n));
 export const lerp = (a,b,t) => a+(b-a)*t;
 export const smooth = (a,b,v) => {const t=clamp((v-a)/(b-a),0,1);return t*t*(3-2*t);};

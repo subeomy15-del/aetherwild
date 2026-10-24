@@ -187,7 +187,7 @@ export class World{
   if(this.rootWind.visible){const p=this.windMotes.geometry.attributes.position;for(let i=0;i<p.count;i++){const y=(this.time*1.6+i*.31)%19,a=this.time*.8+i*2.39,r=.4+y*.13;p.setXYZ(i,Math.cos(a)*r,y,Math.sin(a)*r);}p.needsUpdate=true;}
  }
  surfaceAt(x,z,feet=999,state=null,exclude=null){
-  let top=heightAt(x,z),platform=null;const sky=this.skyHeightAt?.(x,z);if(sky!==null&&sky!==undefined&&sky<=feet+.75&&sky>top){top=sky;platform='sky-landscape';}
+  let top=heightAt(x,z),platform=null;const wide=this.overworldActive?this.overworldHeightAt?.(x,z):null;if(wide!==null&&wide!==undefined&&wide<=feet+.75&&wide>top){top=wide;platform='sky-overworld';}const sky=this.skyHeightAt?.(x,z);if(sky!==null&&sky!==undefined&&sky<=feet+.75&&sky>top){top=sky;platform='sky-landscape';}
   for(const b of this.solids)if(insideTerrace(x,z,b)&&b.top<=feet+.7&&b.top>top){top=b.top;platform=b.id;}
   if(state?.facts.route==='channels'&&Math.abs(x)<3&&z>26.8&&z<56.8&&5.3<=feet+.7&&5.3>top){top=5.3;platform='restored-road';}
   if(state)for(const o of state.objects){if(o.id===exclude)continue;const sz=COMPONENTS[o.kind].size;const dx=x-o.x,dz=z-o.z,c=Math.cos(o.rot),s=Math.sin(o.rot),lx=dx*c-dz*s,lz=dx*s+dz*c;const t=o.y+sz[1]/2;if(Math.abs(lx)<sz[0]/2+.15&&Math.abs(lz)<sz[2]/2+.15&&t<=feet+.75&&t>top){top=t;platform=o.id;}}
