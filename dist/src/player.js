@@ -81,7 +81,7 @@ export class Player{
    else if(!this.grounded&&!this.swimming&&this.coyote<=0){
     const below=g.world.surfaceAt(this.pos.x,this.pos.z,this.pos.y,g.state,g.held?.id).height;
     if(this.vel.y<0&&this.pos.y-below<.65&&!this.gliding)this.jumpBuffer=.16;
-    else{this.gliding=!this.gliding&&s.stamina>5;if(this.gliding){this.vel.y=Math.max(this.vel.y,-2);g.audio.play('sail');}}
+    else{if(g.state.journey&&!g.state.journey.glider){g.toast('No sailcloth yet. Sella can repair one at Reedwake.');}else this.gliding=!this.gliding&&s.stamina>5;if(this.gliding){this.vel.y=Math.max(this.vel.y,-2);g.audio.play('sail');}}
    }
    else this.jumpBuffer=.16;
   }

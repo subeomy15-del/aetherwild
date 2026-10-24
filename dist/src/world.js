@@ -1,3 +1,4 @@
+import {insideTerrace} from './sky-art.js';
 import * as T from '../vendor/three.module.js';
 import {createCharacter} from './characters.js';
 import {addArtGeometry,buildSky,buildTerrain,buildWater,buildVegetation,buildLandmarks,decorateCamp,decorateIntake,decorateRuins,updateEnvironment} from './environment-art.js';
@@ -176,7 +177,7 @@ export class World{
  sync(state,heldId){
   if(this.courierLid){const weight=state.objects.find(o=>o.id==='echo-courier'),open=state.collected.includes('courier-testimony')||weight&&Math.abs(weight.x-25.5)<=1.5&&Math.abs(weight.z-91)<=1.5&&Math.abs(weight.y-11.45)<=.6;this.courierLid.position.y=open?12.2:11.3;this.courierLid.rotation.z=open?-.8:0;this.courierIndicator.scale.y=open?.4:.12;}
 
-  const ids=new Set(state.objects.map(o=>o.id));for(const[id,g]of this.objectMeshes)if(!ids.has(id)){this.root.remove(g);this.objectMeshes.delete(id);}
+  const ids=new Set(state.objects.map(o=>o.id));for(const[id,g]of this.objectMeshes)if(!ids.has(id)){g.removeFromParent();this.objectMeshes.delete(id);}
   for(const o of state.objects){let g=this.objectMeshes.get(o.id)||this.createObjectMesh(o);if(o.id!==heldId){g.position.set(o.x,o.y,o.z);g.rotation.y=o.rot;g.visible=true;}}
   for(const[id,g]of this.pickupMeshes)g.visible=!state.collected.includes(id);
   for(const s of this.socketMeshes){const filled=state.objects.some(o=>o.socket===s.data.id);s.group.visible=!filled;s.ring.rotation.z=this.time*.4;}
@@ -186,14 +187,14 @@ export class World{
   if(this.rootWind.visible){const p=this.windMotes.geometry.attributes.position;for(let i=0;i<p.count;i++){const y=(this.time*1.6+i*.31)%19,a=this.time*.8+i*2.39,r=.4+y*.13;p.setXYZ(i,Math.cos(a)*r,y,Math.sin(a)*r);}p.needsUpdate=true;}
  }
  surfaceAt(x,z,feet=999,state=null,exclude=null){
-  let top=heightAt(x,z),platform=null;
-  for(const b of this.solids)if(Math.abs(x-b.x)<b.w/2&&Math.abs(z-b.z)<b.d/2&&b.top<=feet+.7&&b.top>top){top=b.top;platform=b.id;}
+  let top=heightAt(x,z),platform=null;const sky=this.skyHeightAt?.(x,z);if(sky!==null&&sky!==undefined&&sky<=feet+.75&&sky>top){top=sky;platform='sky-landscape';}
+  for(const b of this.solids)if(insideTerrace(x,z,b)&&b.top<=feet+.7&&b.top>top){top=b.top;platform=b.id;}
   if(state?.facts.route==='channels'&&Math.abs(x)<3&&z>26.8&&z<56.8&&5.3<=feet+.7&&5.3>top){top=5.3;platform='restored-road';}
   if(state)for(const o of state.objects){if(o.id===exclude)continue;const sz=COMPONENTS[o.kind].size;const dx=x-o.x,dz=z-o.z,c=Math.cos(o.rot),s=Math.sin(o.rot),lx=dx*c-dz*s,lz=dx*s+dz*c;const t=o.y+sz[1]/2;if(Math.abs(lx)<sz[0]/2+.15&&Math.abs(lz)<sz[2]/2+.15&&t<=feet+.75&&t>top){top=t;platform=o.id;}}
   return {height:top,platform};
  }
  obstacleAt(x,z,y){
-  const collider=this.colliders.find(c=>Math.hypot(x-c.x,z-c.z)<c.r+.38&&(!c.top||y<c.top-.3));if(collider)return collider;
+  const collider=this.colliders.find(c=>Math.hypot(x-c.x,z-c.z)<c.r+.38&&y>=(c.bottom??-Infinity)&&(!c.top||y<c.top-.3));if(collider)return collider;
   const base=this.gate?.position.y??19;
   if(y+1.9>base&&y<base+7&&Math.abs(x)<4.2+.38&&Math.abs(z+99)<.3+.38)return {x:clamp(x,-4.2,4.2),z:-99,r:.4,top:base+7};
   return null;
@@ -201,6 +202,7 @@ export class World{
  cameraObstacleAt(x,y,z){
   if(this.colliders.some(c=>y>heightAt(c.x,c.z)-.1&&y<(c.top||heightAt(c.x,c.z)+6)&&Math.hypot(x-c.x,z-c.z)<c.r+.15))return true;
   const base=this.gate?.position.y??19;if(y>base&&y<base+7&&Math.abs(x)<4.25&&Math.abs(z+99)<.5)return true;
+  if(this.journeyWalls?.some(b=>Math.abs(x-b.x)<b.w/2+.15&&Math.abs(z-b.z)<b.d/2+.15&&y>b.bottom&&y<b.top))return true;
   return this.riseSurfaces.some(s=>Math.abs(x-s.x)<s.w/2&&Math.abs(z-s.z)<s.d/2&&y>s.bottom-.1&&y<s.top+.15);
  }
  buildCourier(){

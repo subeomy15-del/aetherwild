@@ -29,3 +29,7 @@ Acceptance: working assemblies and saved relationships, no duplication, no unint
 - Sustained profiling, controller/accessibility audit, balancing and verified release packaging.
 
 Three.js remains suitable for this compact increment. General physics, streaming and the full campaign are not claimed. Every milestone must leave a runnable game with accurate documents.
+
+## Superseding direction — v0.5 in progress
+
+The user now wants Hyrule geography and supplied both sky and surface references. Complete the multi-island shrine opening with the surface concealed beneath clouds; verify the entire new-game → four shrine seals → temple → descent → glider journey. Replace the prototype coastlines using the supplied reference only after collision and route tests pass. Then build the central surface hub and order-flexible regional routes in the requested geography. Regional expansion remains in scope; do not replace it with an unrelated construction-only roadmap. Keep unsupported routes explicitly planned.

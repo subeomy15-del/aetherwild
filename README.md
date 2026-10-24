@@ -50,3 +50,6 @@ For isolated testing open http://localhost:3015/?qa=1; this uses tab session sto
 
 
 Local v0.4: speak with Sella, then examine the courier east of camp (reset winch at 15, 91). Select Echo with 3 or Tab, confirm with E after the weight passes the amber plate, and cancel with Q over the plate. Threadbind is an alternate solution. Read the nearby archive for a saved pattern and testimony. Controls are remappable. This branch has not been published to GitHub Pages.
+
+
+In-progress v0.5 on feature/hyrule-world-target: new expeditions start above a cloud-hidden surface with separate ability shrine sites. This draft is not published and its complete shrine-to-hub route is not yet browser-verified. WORLD_REFERENCE.md records the subsequently supplied Hyrule maps; the traced coastline is not yet active terrain. Existing basin expeditions remain loadable.

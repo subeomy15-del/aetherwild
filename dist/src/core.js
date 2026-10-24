@@ -1,3 +1,4 @@
+import {journeyState,validateJourney} from './journey-state.js';
 import {SAVE_VERSION,START,INITIAL_OBJECTS,DEFAULT_SETTINGS,COMPONENTS,COURIER,clamp,questStage} from './data.js';
 export const clone = v => JSON.parse(JSON.stringify(v));
 let idSequence=0;
@@ -6,7 +7,7 @@ function nextId(prefix,occupied=[]){
  do{id=prefix+'-'+Date.now().toString(36)+'-'+(idSequence++).toString(36);}while([...ids].some(existing=>existing===id||existing.startsWith(id+'-')));
  return id;
 }
-export function freshState(){return {version:SAVE_VERSION,expedition:{name:'First Expedition'},abilities:['weave','rise','echo'],player:{...START,hp:6,maxHp:6,stamina:100,maxStamina:100},safe:{...START},inventory:{copper:3,fiber:4,broth:3,glass:0,regulator:0},facts:{metSella:false,intakeOpen:false,route:null,rewarded:false},discovered:['reedwake'],collected:[],defeated:[],objects:clone(INITIAL_OBJECTS),blueprints:[],pins:[],playtime:0,saveTime:null};}
+export function freshState(){return {version:SAVE_VERSION,journey:journeyState(),equipment:{weapon:'mechanic-blade',modifier:null},expedition:{name:'First Expedition'},abilities:['weave','rise','echo'],player:{...START,hp:6,maxHp:6,stamina:100,maxStamina:100},safe:{...START},inventory:{copper:3,fiber:4,broth:3,glass:0,regulator:0},facts:{metSella:false,intakeOpen:false,route:null,rewarded:false},discovered:['reedwake'],collected:[],defeated:[],objects:clone(INITIAL_OBJECTS),blueprints:[],pins:[],playtime:0,saveTime:null};}
 export function transact(inventory,delta){
  if(!inventory||!delta||Object.entries(delta).some(([k,n])=>!Object.hasOwn(inventory,k)||!Number.isSafeInteger(n)||inventory[k]+n<0||inventory[k]+n>999))return false;
  for(const [k,n] of Object.entries(delta))inventory[k]+=n;return true;
@@ -55,11 +56,13 @@ export function claimCourierArchive(state){
 }
 export function checksum(text){let h=2166136261;for(let i=0;i<text.length;i++){h^=text.charCodeAt(i);h=Math.imul(h,16777619);}return (h>>>0).toString(16);}
 export function validateState(raw){
- if(!raw||typeof raw!=='object'||Array.isArray(raw)||![1,2,3,4].includes(raw.version))throw Error('Unrecognized save version.');
+ if(!raw||typeof raw!=='object'||Array.isArray(raw)||![1,2,3,4,5].includes(raw.version))throw Error('Unrecognized save version.');
  const s=clone(raw);
  if(s.version===1){s.pins??=[];s.blueprints??=[];s.version=2;}
  if(s.version===2){s.expedition??={name:'First Expedition'};s.abilities=['weave','rise'];s.version=3;}
  if(s.version===3){if(!Array.isArray(s.abilities)||!s.abilities.every(a=>['weave','rise'].includes(a)))throw Error('Invalid legacy ability data.');if(!Array.isArray(s.objects))throw Error('Invalid construction data.');s.abilities=[...new Set([...(s.abilities||[]),'echo'])];if(!s.objects.some(o=>o.id===COURIER.id)&&s.objects.length<24)s.objects.push(clone(COURIER));s.version=4;}
+ if(s.version===4){s.journey=journeyState();s.equipment={weapon:'mechanic-blade',modifier:null};s.version=5;}
+ validateJourney(s.journey);if(s.equipment?.weapon!=='mechanic-blade'||![null,'prism'].includes(s.equipment.modifier))throw Error('Invalid equipment combination.');
  if(typeof s.expedition?.name!=='string'||!s.expedition.name.trim()||s.expedition.name.length>32)throw Error('Invalid expedition name.');
  if(!Array.isArray(s.abilities)||s.abilities.length>3||!s.abilities.every(a=>['weave','rise','echo'].includes(a)))throw Error('Invalid ability data.');
  for(const key of ['x','y','z','hp','maxHp','stamina','maxStamina'])if(!Number.isFinite(s.player?.[key]))throw Error('Invalid player state.');

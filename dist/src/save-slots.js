@@ -1,3 +1,4 @@
+import {beginJourney} from './journey-state.js';
 import {SaveStore,freshState} from './core.js';
 const IDS=['1','2','3'];
 export class SaveSlots{
@@ -9,7 +10,7 @@ export class SaveSlots{
  create(name,id){
   const slot=this.list().find(s=>s.id===id);if(!slot)throw Error('Choose an expedition slot.');
   if(slot.occupied)throw Error('This slot already holds an expedition. Load it or choose an empty slot.');
-  const state=freshState();state.expedition.name=String(name||'New Expedition').trim().slice(0,32)||'New Expedition';
+  const state=beginJourney(freshState());state.expedition.name=String(name||'New Expedition').trim().slice(0,32)||'New Expedition';
   // The first verified write succeeds before active-slot metadata changes.
   this.store(id).write(state);this.select(id);return state;
  }

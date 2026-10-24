@@ -1,5 +1,5 @@
-export const VERSION = '0.4.0';
-export const SAVE_VERSION = 4;
+export const VERSION = '0.5.0';
+export const SAVE_VERSION = 5;
 export const clamp = (n,a,b) => Math.max(a,Math.min(b,n));
 export const lerp = (a,b,t) => a+(b-a)*t;
 export const smooth = (a,b,v) => {const t=clamp((v-a)/(b-a),0,1);return t*t*(3-2*t);};
@@ -41,6 +41,8 @@ export const INITIAL_OBJECTS=[
   {...COURIER},
 ];
 export const SOCKETS=[
+  {id:'sky-forest-bridge',kind:'panel',x:-160,y:76.2,z:90,rot:Math.PI/2,label:'Forest island bridge bracket'},
+  {id:'sky-bridge',kind:'panel',x:-145,y:76.2,z:58.5,rot:0,label:'Aerial maintenance bracket'},
   {id:'crossing-south',kind:'panel',x:-28,y:5.55,z:47.6,rot:0,label:'South bracket'},
   {id:'crossing-north',kind:'panel',x:-28,y:5.55,z:36.2,rot:0,label:'North bracket'},
   {id:'intake-weight',kind:'counterweight',x:-10,y:20.5,z:-91,rot:0,label:'Counterweight cradle'},
@@ -69,8 +71,8 @@ export const ENEMIES=[
  {id:'scrapper-2',kind:'scavenger',x:-26,z:-17,hp:3},
  {id:'sentinel-1',kind:'sentinel',x:0,z:-73,hp:5},
 ];
-export const DEFAULT_SETTINGS={master:.8,music:.42,sfx:.7,ambient:.6,sensitivity:1,gamepadSensitivity:1,invertY:false,reducedMotion:false,highContrast:false,textScale:1,subtitles:true,climbAssist:true,sprintToggle:false,muteUnfocused:true,showCompass:true,showMinimap:true,guidance:true,resolution:1.5,vegetation:1,shadowDistance:48,quality:'high',bindings:{forward:'KeyW',back:'KeyS',left:'KeyA',right:'KeyD',jump:'Space',sprint:'ShiftLeft',interact:'KeyE',ability:'KeyQ',lockOn:'KeyT',abilityWheel:'Tab',weave:'Digit1',rise:'Digit2',echo:'Digit3',dodge:'KeyC',attack:'Mouse0',attackAlt:'KeyX',block:'Mouse2',inventory:'KeyI',journal:'KeyJ',map:'KeyM',pause:'Escape',heal:'KeyH',rotate:'KeyR',detach:'KeyF',undo:'KeyZ'}};
-export const ACTION_LABELS={forward:'Move forward',back:'Move backward',left:'Move left',right:'Move right',jump:'Jump / sailcloth',sprint:'Sprint',interact:'Interact / place',ability:'Use selected ability',lockOn:'Target lock',abilityWheel:'Ability wheel',weave:'Threadbind direct',rise:'Rise direct',echo:'Echo direct',dodge:'Dodge',attack:'Light attack',attackAlt:'Alternate light attack',block:'Block / timed guard',inventory:'Satchel',journal:'Journal',map:'Map',pause:'Pause',heal:'Drink broth',rotate:'Rotate held object',detach:'Detach',undo:'Undo construction'};
+export const DEFAULT_SETTINGS={master:.8,music:.42,sfx:.7,ambient:.6,sensitivity:1,gamepadSensitivity:1,invertY:false,reducedMotion:false,highContrast:false,textScale:1,subtitles:true,climbAssist:true,sprintToggle:false,muteUnfocused:true,showCompass:true,showMinimap:true,guidance:true,resolution:1.5,vegetation:1,shadowDistance:48,quality:'high',bindings:{forward:'KeyW',back:'KeyS',left:'KeyA',right:'KeyD',jump:'Space',sprint:'ShiftLeft',interact:'KeyE',ability:'KeyQ',lockOn:'KeyT',abilityWheel:'Tab',weave:'Digit1',rise:'Digit2',echo:'Digit3',bind:'Digit4',dodge:'KeyC',attack:'Mouse0',attackAlt:'KeyX',block:'Mouse2',inventory:'KeyI',journal:'KeyJ',map:'KeyM',pause:'Escape',heal:'KeyH',rotate:'KeyR',detach:'KeyF',undo:'KeyZ'}};
+export const ACTION_LABELS={forward:'Move forward',back:'Move backward',left:'Move left',right:'Move right',jump:'Jump / sailcloth',sprint:'Sprint',interact:'Interact / place',ability:'Use selected ability',lockOn:'Target lock',abilityWheel:'Ability wheel',weave:'Threadbind direct',rise:'Rise direct',echo:'Echo direct',bind:'Bind equipment',dodge:'Dodge',attack:'Light attack',attackAlt:'Alternate light attack',block:'Block / timed guard',inventory:'Satchel',journal:'Journal',map:'Map',pause:'Pause',heal:'Drink broth',rotate:'Rotate held object',detach:'Detach',undo:'Undo construction'};
 export const OPENING={
  title:'The Last Forecast',
  edaQuote:'It counted the houses, Iri. Then it marked the valley empty.',

@@ -23,3 +23,7 @@ Curiosity → observation → experiment → travel or conflict → useful disco
 ## Planned campaign
 
 WORLD_BIBLE.md defines the replacement long-term story. It expands the local conflict through surface communities, elevated weather stations and the inhabited machinery below. Reachable sky and underground spaces, broader construction, vehicles, equipment combinations, environmental interactions and regional dungeons are future milestones. They are not implemented by writing this plan.
+
+## Current user override
+
+The latest target is a sky-first Hyrule layout with multiple islands and shrines, followed by surface regional expansion. The original region-counterpart direction above is superseded for new world development. Existing basin content remains for compatibility. WORLD_REFERENCE.md records the supplied maps and the implemented/planned boundary.

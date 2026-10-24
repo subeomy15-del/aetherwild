@@ -35,3 +35,7 @@ Act IV, A Working Horizon: ally contributions let the player isolate and reconne
 ## Content discipline
 
 Forecasts do not imply an implemented countdown. Ghostly recordings do not imply time travel. Echo returns object transforms, not history. New locations need silhouettes, routes, mechanical purpose, rewards and recovery. Any future rewrite must preserve or explicitly migrate persistent facts; it must not erase a completed expedition to force new exposition.
+
+## Current setting override
+
+The user subsequently requested Hyrule itself and supplied sky/surface maps. New geographical work follows WORLD_REFERENCE.md. The original named regions and campaign above are retained as historical design work, not the currently approved replacement geography. No complete Hyrule terrain or campaign is implemented by this change of direction.

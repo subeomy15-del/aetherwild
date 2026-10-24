@@ -47,3 +47,15 @@ No reachable sky region, underground cave, streaming, land vehicle, equipment co
 Physical gamepad/disconnects, prolonged memory growth, every collision shape, both full ending journeys and the new Rise focus case need broader hands-on verification. Sound cues are implemented but native browser automation has not established subjective audio quality. User saves are origin-local; clearing storage removes them.
 
 Next concrete milestone: bounded rigid construction assemblies, one recoverable multi-solution puzzle and saved attachment graphs, validated before adding powered vehicles. See IMPLEMENTATION_PLAN.md.
+
+## In-progress v0.5 draft after new user direction
+
+Branch: feature/hyrule-world-target. The v0.4 increment above remains the last completed, committed milestone; v0.5 is work in progress, not published.
+
+New expeditions now begin in the elevated tutorial. Added separate shrine sites, a prism/blade combination with real damage changes, temple/descent gating, a scripted steering descent and a glider supply quest. Surface rendering is hidden beneath an opaque animated cloud layer during the sky start. Older saves migrate to schema 5 in the basin with their glider retained. Forest, snow and higher rewind islands are under layout revision.
+
+Current checks: 34 tests passed after the shrine split, including legacy migration, equipment transactions, actual terrain gaps, shrine prerequisites/reward idempotence, descent pause state, glider gating, cloud visibility and recovery. Source checks pass for 23 modules including the standalone map-reference data file.
+
+Browser evidence: sky spawn/control, cloud-hidden surface, actual first panel lifting/attachment and crossing were exercised. The complete four-shrine-to-hub route has NOT been browser-verified after the latest structural changes. Shrine maps/prompts and route/collision consistency still need revision. The surface reference remains unimplemented; regional expansion is still required. See WORLD_REFERENCE.md for the user's new map target. Do not describe this draft as the full Great Sky Island, a complete opening milestone or an exact Hyrule recreation.
+
+Final startup check: a fresh isolated Chrome expedition loaded the current separated-shrine draft, player movement worked, clouds concealed the surface and no console errors were reported. Capture: artifacts/sky-layout-draft-v0.5.png. The traced reference coastline is still not the active terrain. The final full four-shrine browser route remains unverified.

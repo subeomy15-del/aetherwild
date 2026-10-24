@@ -17,7 +17,7 @@ export class Input{
   window.addEventListener('mousemove',e=>{if(document.pointerLockElement===canvas&&this.enabled){this.mouse.x+=e.movementX;this.mouse.y+=e.movementY;}});
   canvas.addEventListener('wheel',e=>{if(this.enabled){this.mouse.wheel+=Math.sign(e.deltaY);e.preventDefault();}},{passive:false});
  }
- lock(){if(!this.enabled)return;try{const p=this.canvas.requestPointerLock();p?.catch?.(()=>{});}catch{}}
+ lock(){if(!this.enabled||new URLSearchParams(location.search).has('qa'))return;try{const p=this.canvas.requestPointerLock();p?.catch?.(()=>{});}catch{}}
  unlock(){if(document.pointerLockElement)document.exitPointerLock();this.clear();}
  clear(){this.held.clear();this.pressed.clear();this.mouse={x:0,y:0,wheel:0};this.move={x:0,y:0};this.look={x:0,y:0};this.padHeld={};this.padPressed={};}
  update(){
