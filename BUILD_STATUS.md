@@ -5,6 +5,8 @@ The rebuilt Mossglass chapter is playable. This is a verified compact increment.
 ## Launch
 Run npm start in /Users/danielyoo/aetherwild, then open http://localhost:3015 in Chrome or Edge. Node 20+ / WebGL 2; no installation or remote runtime dependencies. Voxel Vault is untouched.
 
+GitHub Pages target: https://subeomy15-del.github.io/aetherwild/ . The GitHub workflow checks the game and publishes dist from main. Localhost and GitHub Pages have separate browser saves.
+
 ## Playable
 - Seven discoverable surface locations, Reedwake Camp, flooded crossing, forest ruins/encounter, optional hollow/lookout and Bellwether Intake. Distant Crown islands remain scenery.
 - Original detailed articulated mechanic/creatures; blended movement, guard and attack animation; stitched sailcloth; branching trees, instanced wind grass, layered silhouettes, canvas camp, animated water/foam, decorated ceramic ruins and cooler lighting.

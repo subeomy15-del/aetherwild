@@ -2,6 +2,11 @@
 
 Original single-player 3D adventure, version 0.3. The rebuilt Mossglass chapter is playable; the three-layer campaign remains in development. Voxel Vault is separate and unchanged.
 
+## Play online
+[Play Aetherwild on GitHub Pages](https://subeomy15-del.github.io/aetherwild/)
+
+The Pages workflow runs the tests and source checks, then publishes the playable dist directory on pushes to main. Browser saves belong to the current origin, so GitHub Pages and localhost keep separate expeditions.
+
 ## Run
 ~~~sh
 cd /Users/danielyoo/aetherwild
